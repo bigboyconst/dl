@@ -14,10 +14,12 @@ Cmd cmd = {0};
 
 // TODO: Extend to take in multiple source files (a single one isn't really my style)
 void nvcc(const char* target, const char* extension) {
+	const char* bin_name = temp_sprintf(BUILD_DIR"%s", target);
+	const char* src_name = temp_sprintf(SRC_DIR"%s/%s%s", target, target, extension);
 	cmd_append(&cmd, "nvcc", 
-		"-o", target, 
+		"-o", bin_name,
 		"-I"THIRDPARTY_DIR,
-		temp_sprintf(SRC_DIR"%s/%s.%s", target, target, extension)
+		src_name
 	);
 }
 
@@ -27,5 +29,8 @@ int main(int argc, char** argv) {
 	if (!mkdir_if_not_exists(BUILD_DIR)) return 1;
 
 	nvcc(targets[0], ".cu");
-	
+
+	if (!cmd_run_sync_and_reset(&cmd)) return 1;
+
+	return 0; 
 }
