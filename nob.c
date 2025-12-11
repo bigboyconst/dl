@@ -5,6 +5,7 @@
 #define BUILD_DIR "build/"
 #define SRC_DIR "src/"
 #define THIRDPARTY_DIR "src/thirdparty/"
+#define CUMAT_INCLUDE THIRDPARTY_DIR"cuMat/"
 
 // This is so fucking cursed bro
 typedef struct {
@@ -19,34 +20,29 @@ const char* targets[] = {
 	"cudatest"
 };
 
-Cmd cmd = {0};
+void nvcc(Cmd* cmd, const char* target, const char** sources) {
+	cmd_append(cmd, "nvcc", "-o", temp_sprintf(BUILD_DIR"%s", target));
+	cmd_append(cmd, "-I"THIRDPARTY_DIR);
+	cmd_append(cmd, "-I"CUMAT_INCLUDE);
 
-void init_sources() {
-	// cudatest
-	const char* cudatest_srcs[] = { "cudatest.cu" };
-	da_append(&sources, cudatest_srcs);
-}
-
-void nvcc(const char* target, const char** sources) {
-	const char* bin_name = temp_sprintf(BUILD_DIR"%s", target);
-	cmd_append(&cmd, "nvcc", 
-		"-o", bin_name,
-		"-I"THIRDPARTY_DIR
-	);
 	for (size_t i = 0; i < NOB_ARRAY_LEN(sources); i++) {
-		const char* src_name = temp_sprintf(SRC_DIR"%s/%s", target, sources[i]);
-		cmd_append(&cmd, src_name);
+		cmd_append(cmd, temp_sprintf(SRC_DIR"%s/%s", target, sources[i]));
 	}
 }
 
 int main(int argc, char** argv) {
 	NOB_GO_REBUILD_URSELF(argc, argv);
+	// cudatest
+	const char* cudatest_srcs[] = { "cudatest.cu" };
+	da_append(&sources, cudatest_srcs);
 
-	init_sources();
+	Cmd cmd = {0};
+	
+	String_Builder sb = {0};
 
 	if (!mkdir_if_not_exists(BUILD_DIR)) return 1;
 
-	nvcc(targets[0], sources.items[0]);
+	nvcc(&cmd, targets[0], sources.items[0]);
 
 	if (!cmd_run_sync_and_reset(&cmd)) return 1;
 

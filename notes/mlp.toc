@@ -1,0 +1,1 @@
+\contentsline {chapter}{\numberline {1}The Basics of Multilayer Perceptrons}{2}{chapter.1}%

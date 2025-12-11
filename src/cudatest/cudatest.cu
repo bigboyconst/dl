@@ -1,6 +1,9 @@
 #include <iostream>
 #include <cuda_runtime.h>
 
+// // compilation issues with cuMat: why?
+// #include <cuMat/Core>
+
 __global__ void add(const float* a, const float* b, float* c, int N) {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
