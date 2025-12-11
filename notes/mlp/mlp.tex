@@ -224,6 +224,8 @@
 }
 \def\nstyle{int(\lay<\Nnodlen?min(2,\lay):3)} % map layer number onto 1, 2, or 3
 
+\pgfmathsetseed{12345}
+
 % =============================================================
 % AXES STYLE
 % =============================================================
@@ -298,8 +300,9 @@ The image people usually associate with neural networks is the following:
 				% CONNECTIONS
 				\ifnum\lay>1 % connect to previous layer
 					\foreach \j in {1,...,\Nnod[\prev]}{ % loop over nodes in previous layer
-						\draw[connect,white,line width=1.2] (N\prev-\j) -- (N\lay-\i);
-						\draw[connect] (N\prev-\j) -- (N\lay-\i);
+						\pgfmathsetmacro{\w}{0.3 + rnd}
+						\draw[connect,white,line width=1.2*\w] (N\prev-\j) -- (N\lay-\i);
+						\draw[connect, line width=\w] (N\prev-\j) -- (N\lay-\i);
 						%\draw[connect] (N\prev-\j.0) -- (N\lay-\i.180); % connect to left
 					}
 				\fi % else: nothing to connect first layer

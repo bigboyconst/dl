@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.10)  11 DEC 2025 10:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.10)  11 DEC 2025 13:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1085,24 +1085,24 @@ File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
  (./mlp.aux)
 \openout1 = `mlp.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 269.
-LaTeX Font Info:    ... okay on input line 269.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 269.
-LaTeX Font Info:    ... okay on input line 269.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 269.
-LaTeX Font Info:    ... okay on input line 269.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 269.
-LaTeX Font Info:    ... okay on input line 269.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 269.
-LaTeX Font Info:    ... okay on input line 269.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 269.
-LaTeX Font Info:    ... okay on input line 269.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 269.
-LaTeX Font Info:    ... okay on input line 269.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 269.
-LaTeX Font Info:    ... okay on input line 269.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 269.
-LaTeX Font Info:    ... okay on input line 269.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 271.
+LaTeX Font Info:    ... okay on input line 271.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 271.
+LaTeX Font Info:    ... okay on input line 271.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 271.
+LaTeX Font Info:    ... okay on input line 271.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 271.
+LaTeX Font Info:    ... okay on input line 271.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 271.
+LaTeX Font Info:    ... okay on input line 271.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 271.
+LaTeX Font Info:    ... okay on input line 271.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 271.
+LaTeX Font Info:    ... okay on input line 271.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 271.
+LaTeX Font Info:    ... okay on input line 271.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 271.
+LaTeX Font Info:    ... okay on input line 271.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1163,7 +1163,7 @@ e
 Package pgfplots notification 'compat/show suggested version=true': document ha
 s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
 
-Package hyperref Info: Link coloring ON on input line 269.
+Package hyperref Info: Link coloring ON on input line 271.
 (./mlp.out) (./mlp.out)
 \@outlinefile=\write5
 \openout5 = `mlp.out'.
@@ -1182,43 +1182,43 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'mlp.bbl' found.
  (./mlp.bbl)
-Package biblatex Info: Reference section=0 on input line 269.
-Package biblatex Info: Reference segment=0 on input line 269.
+Package biblatex Info: Reference section=0 on input line 271.
+Package biblatex Info: Reference segment=0 on input line 271.
 \c@mv@tabular=\count457
 \c@mv@boldtabular=\count458
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Trying to load font information for OML+mlmm on input line 
-272.
+274.
 
 (/usr/share/texlive/texmf-dist/tex/latex/mlmodern/omlmlmm.fd
 File: omlmlmm.fd 2021/01/11 v1.0 Font defs for mlmodern
 )
 LaTeX Font Info:    Trying to load font information for OMS+mlmsy on input line
- 272.
+ 274.
 
 (/usr/share/texlive/texmf-dist/tex/latex/mlmodern/omsmlmsy.fd
 File: omsmlmsy.fd 2021/01/11 v1.0 Font defs for mlmodern
 )
 LaTeX Font Info:    Trying to load font information for OMX+mlmex on input line
- 272.
+ 274.
 
 (/usr/share/texlive/texmf-dist/tex/latex/mlmodern/omxmlmex.fd
 File: omxmlmex.fd 2021/01/11 v1.0 Font defs for mlmodern
 )
 LaTeX Font Info:    External font `mlmex10' loaded for size
-(Font)              <14.4> on input line 272.
+(Font)              <14.4> on input line 274.
 LaTeX Font Info:    External font `mlmex10' loaded for size
-(Font)              <10> on input line 272.
+(Font)              <10> on input line 274.
 LaTeX Font Info:    External font `mlmex10' loaded for size
-(Font)              <7> on input line 272.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 272
+(Font)              <7> on input line 274.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 274
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 272
+LaTeX Font Info:    Trying to load font information for U+msb on input line 274
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -1235,72 +1235,72 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.275 \chapter
+l.277 \chapter
               {The Basics of Multilayer Perceptrons} [1
 
 ]
 Chapter 1.
 LaTeX Font Info:    Trying to load font information for OT1+Roboto-LF on input 
-line 313.
+line 316.
 (/usr/share/texlive/texmf-dist/tex/latex/roboto/OT1Roboto-LF.fd
 File: OT1Roboto-LF.fd 2019/12/11 (autoinst) Font definitions for OT1/Roboto-LF.
 
 )
 LaTeX Font Info:    Font shape `OT1/Roboto-LF/m/n' aliased to
-(Font)              `OT1/Roboto-LF/regular/n' on input line 313.
+(Font)              `OT1/Roboto-LF/regular/n' on input line 316.
 LaTeX Font Info:    Font shape `OT1/Roboto-LF/regular/n' will be
-(Font)              scaled to size 10.95pt on input line 313.
+(Font)              scaled to size 10.95pt on input line 316.
 LaTeX Font Info:    Font shape `OT1/Roboto-LF/m/sc' aliased to
-(Font)              `OT1/Roboto-LF/regular/sc' on input line 313.
+(Font)              `OT1/Roboto-LF/regular/sc' on input line 316.
 LaTeX Font Info:    Font shape `OT1/Roboto-LF/regular/sc' will be
-(Font)              scaled to size 10.95pt on input line 313.
+(Font)              scaled to size 10.95pt on input line 316.
 LaTeX Font Info:    Font shape `OT1/Roboto-LF/bx/sc' in size <10.95> not availa
 ble
 (Font)              Font shape `OT1/Roboto-LF/b/sc' tried instead on input line
- 313.
+ 316.
 LaTeX Font Info:    Font shape `OT1/Roboto-LF/b/sc' aliased to
-(Font)              `OT1/Roboto-LF/bold/sc' on input line 313.
+(Font)              `OT1/Roboto-LF/bold/sc' on input line 316.
 LaTeX Font Info:    Font shape `OT1/Roboto-LF/bold/sc' will be
-(Font)              scaled to size 10.95pt on input line 313.
+(Font)              scaled to size 10.95pt on input line 316.
 LaTeX Font Info:    External font `mlmex10' loaded for size
-(Font)              <12> on input line 327.
+(Font)              <12> on input line 330.
 LaTeX Font Info:    External font `mlmex10' loaded for size
-(Font)              <8> on input line 327.
+(Font)              <8> on input line 330.
 LaTeX Font Info:    External font `mlmex10' loaded for size
-(Font)              <6> on input line 327.
+(Font)              <6> on input line 330.
 
-contour: Using real outline for `$w_{1,1}$' on input line 331.
-contour: Using real outline for `$w_{1,2}$' on input line 331.
-contour: Using real outline for `$w_{1,3}$' on input line 331.
-contour: Using real outline for `$w_{1,4}$' on input line 331.
-contour: Using real outline for `$w_{1,5}$' on input line 331.
+contour: Using real outline for `$w_{1,1}$' on input line 334.
+contour: Using real outline for `$w_{1,2}$' on input line 334.
+contour: Using real outline for `$w_{1,3}$' on input line 334.
+contour: Using real outline for `$w_{1,4}$' on input line 334.
+contour: Using real outline for `$w_{1,5}$' on input line 334.
 [2
 
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/roboto/rbto_5xgh2b.enc}]
 LaTeX Font Info:    Trying to load font information for TS1+mlmr on input line 
-339.
+342.
 
 (/usr/share/texlive/texmf-dist/tex/latex/mlmodern/ts1mlmr.fd
 File: ts1mlmr.fd 2021/01/11 v1.0 Font defs for mlmodern
 )
 LaTeX Font Info:    External font `mlmex10' loaded for size
-(Font)              <10.95> on input line 372.
+(Font)              <10.95> on input line 375.
  [3{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/e
 nc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr
 /share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}]
-contour: Using real outline for `$w_{2,1}$' on input line 421.
-contour: Using real outline for `$w_{2,2}$' on input line 421.
-contour: Using real outline for `$w_{2,3}$' on input line 421.
-contour: Using real outline for `$w_{2,4}$' on input line 421.
-contour: Using real outline for `$w_{2,n}$' on input line 421.
+contour: Using real outline for `$w_{2,1}$' on input line 424.
+contour: Using real outline for `$w_{2,2}$' on input line 424.
+contour: Using real outline for `$w_{2,3}$' on input line 424.
+contour: Using real outline for `$w_{2,4}$' on input line 424.
+contour: Using real outline for `$w_{2,n}$' on input line 424.
 [4] [5]
 Package hyperref Info: bookmark level for unknown toc defaults to 0 on input li
-ne 483.
+ne 486.
 LaTeX Font Info:    External font `mlmex10' loaded for size
-(Font)              <5> on input line 517.
+(Font)              <5> on input line 520.
  [6]
 LaTeX Font Info:    Trying to load font information for OT1+mlmtt on input line
- 635.
+ 638.
  (/usr/share/texlive/texmf-dist/tex/latex/mlmodern/ot1mlmtt.fd
 File: ot1mlmtt.fd 2021/01/11 v1.0 Font defs for mlmodern
 )
@@ -1319,10 +1319,10 @@ Package logreq Info: Writing requests to 'mlp.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 42647 strings out of 474222
- 959096 string characters out of 5748732
- 1953975 words of memory out of 5000000
- 64248 multiletter control sequences out of 15000+600000
+ 42749 strings out of 474222
+ 961220 string characters out of 5748732
+ 1954975 words of memory out of 5000000
+ 64350 multiletter control sequences out of 15000+600000
  631244 words of font info for 96 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  102i,19n,117p,724b,2411s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1341,7 +1341,7 @@ texmf-dist/fonts/type1/public/mlmodern/mlmri12.pfb></usr/share/texlive/texmf-di
 st/fonts/type1/public/mlmodern/mlmsy10.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/mlmodern/mlmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/mlmodern/mlmtt12.pfb>
-Output written on mlp.pdf (8 pages, 247310 bytes).
+Output written on mlp.pdf (8 pages, 248078 bytes).
 PDF statistics:
  168 PDF objects out of 1000 (max. 8388607)
  116 compressed objects within 2 object streams
