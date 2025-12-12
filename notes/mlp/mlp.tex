@@ -353,7 +353,7 @@ The actual math behind these networks is surprisingly simple. We'll focus on a s
 
 Let's decypher these symbols one-by-one:
 \begin{itemize}
-	\item ${\color{mydarkgreen} a_n^{(0)}}$: The activations of the nodes within the first layer.
+	\item ${\color{mydarkgreen} a_n^{(0)}}$: The activations of the neurons within the first layer.
 	\item ${\color{mydarkblue} w_{1,n}^{(1)}}$: The \textbf{weights} of each of the connections. Essentially, this encodes how strongly connected the neurons are (so how much they influence each-other).
 	\item ${\color{mydarkred} a_1^{(1)}}$: The output activation.
 \end{itemize}
@@ -497,7 +497,6 @@ Now, if we imply that the function $\sigma(x)$ applies component-wise to vectors
 
 \newpage
 
-\addcontentsline{section}{toc}{Other Activation Functions}
 \section*{Other Activation Functions}
 
 The sigmoid is not the only function we can use to remap our values. In fact, there are infinitely many functions we can use. Another common choice is the $\tanh$ function (which remaps values between $-1$ and 1). Beyond that, we sometimes don't want to remap between finite values at all. This is why other (arguably more common) activation functions include the $\ReLU$, $\SiLU$, and, more recently, $\GELU$ functions.
@@ -591,13 +590,13 @@ Essentially, we exponentiate each component of the vector, and divide it by the 
 
 \section{Deriving Backpropagation}
 
-Now that we know what cost functions are, how can we use them to determine how much we need to change each of our parameters by to increase the result. This is effectively just a calculus problem: we want to minimize some function $C(\bfa^{(n_L - 1)}, \bfy)$ of the activations in the last layer\footnote{We use $n_L - 1$ as the layer number for the last layer since $n_L$ is the number of layers and the convention is that layers start at 0, not 1.} and the target output. 
+Before we begin, we'll need to introduce some additional notation. Firstly, we will use $L$ as the layer number for the last layer in the network, so $\bfa^{(L)}$ is the activation vector in the final layer. We'll also introduce a substitution by using $\bfz^{(\ell)}$ to denote the input to the activation function of the model; that is, $\bfz^{(\ell)} = {\color{mydarkblue}\bfW^{(\ell)}}{\color{mydarkgreen}\bfa^{(\ell-1)}} + {\color{mydarkpurple}\bfb^{(\ell)}}$. Finally, we'll denote the number of neurons in the layer $\ell$ by $n_\ell$.
 
 \vspace{12pt}
 
-We'll also introduce a common piece of notation: we use $\bfz^{(L)}$ to denote the input to the activation function of the model; that is, $\bfz^{(L)} = {\color{mydarkblue}\bfW^{(L)}}{\color{mydarkgreen}\bfa^{(L-1)}} + {\color{mydarkpurple}\bfb^{(L)}}$. This notation will be useful later on.
+Now that we know what cost functions are, how can we use them to determine how much we need to change each of our parameters by to increase the result. This is effectively just a calculus problem: we want to minimize some function $C(\bfa^{(L)}, \bfy)$ of the activations in the last layer and the target output.
 
-\subsection{Weights in the last layer}
+\subsection*{Weights in the last layer}
 
 Our goal is essentially to adjust the weights and biases so as to decrease the value of the loss function. That means that, putting aside rigor for a moment, the variation in our model's weights $W$ and biases $B$ should look something like this:
 \begin{align*}
@@ -605,65 +604,65 @@ Our goal is essentially to adjust the weights and biases so as to decrease the v
 	\Delta B &\propto -\DD{C}{B}
 \end{align*}
 
-We'll start by looking at the output layer at a specific weight $w_{ij}^{(n_L-1)}$. From the equations above, 
+We'll start by looking at the output layer at a specific weight $w_{ij}^{(L)}$. From the equations above, 
 \[
-	\Delta w_{ij}^{(n_L-1)} \propto -\DD{C}{w_{ij}^{(n_L-1)}}
+	\Delta w_{ij}^{(L)} \propto -\DD{C}{w_{ij}^{(L)}}
 \]
 
 However, the cost function is not directly related to the weight, so we need to apply the chain rule until we reach the input of the function. Recall that
 \[
-	a_i^{(n_L-1)} = \sigma\left(b_i^{(n_L-1)} + \sum_j w_{ij}^{(n_L-1)}a_j^{(n_L-2)} \right) = \sigma\left(z_i^{(n_L-1)}\right)
+	a_i^{(L)} = \sigma\left(b_i^{(L)} + \sum_j w_{ij}^{(L)}a_j^{(L-1)} \right) = \sigma\left(z_i^{(L)}\right)
 \]
 
 This means that, according to the chain rule, 
 \[
-	\DD{C}{w_{ij}^{(n_L-1)}} = \DD{C}{a_i^{(n_L-1)}}\DD{a_i^{(n_L-1)}}{z_i^{(n_L-1)}}\DD{z_i^{(n_L-1)}}{w_{ij}^{(n_L-1)}}
+	\DD{C}{w_{ij}^{(L)}} = \DD{C}{a_i^{(L)}}\DD{a_i^{(L)}}{z_i^{(L)}}\DD{z_i^{(L)}}{w_{ij}^{(L)}}
 \]
 
-We'll evaluate each of these derivatives one-by-one until we get an exact expression for $\Delta w_{ij}^{(n_L-1)}$. Firstly, since we're working generally, we can't really simplify the derivative of the cost function relative to the activation (as that will ultimately depend on the cost function used). However, we can somewhat reduce $\dps{\DD{a_i^{(n_L-1)}}{z_i^{(n_L-1)}}}$:
+We'll evaluate each of these derivatives one-by-one until we get an exact expression for $\Delta w_{ij}^{(L)}$. Firstly, since we're working generally, we can't really simplify the derivative of the cost function relative to the activation (as that will ultimately depend on the cost function used). However, we can somewhat reduce $\dps{\DD{a_i^{(L)}}{z_i^{(L)}}}$:
 \[
-	\DD{a_i^{(n_L-1)}}{z_i^{(n_L-1)}} = \sigma'\left(z_i^{(n_L-1)}\right)
+	\DD{a_i^{(L)}}{z_i^{(L)}} = \sigma'\left(z_i^{(L)}\right)
 \]
 
 Unfortunately, since we want to be as general as possible, we can't really reduce the expression any more since we don't know what the activation function is.
 
 \vspace{12pt}
 
-Finally, we can get an actual exact expression for $\dps{\DD{z_i^{(n_L-1)}}{w_{ij}^{(n_L-1)}}}$. The crucial thing to notice is that only one of the terms in the sum that defines $z$ will have a nonzero derivative with respect to the weight, and that's the term with that specific weight in it:
+Finally, we can get an actual exact expression for $\dps{\DD{z_i^{(L)}}{w_{ij}^{(L)}}}$. The crucial thing to notice is that only one of the terms in the sum that defines $z$ will have a nonzero derivative with respect to the weight, and that's the term with that specific weight in it:
 \[
-	z_i^{(n_L-1)} = \bracetext{b_i^{(n_L-1)}}{\text{constant}} + \bracetext{w_{i,1}^{(n_L-1)}a_1^{(n_L-2)}}{\text{constant}} + \bracetext{w_{i,2}^{(n_L-1)}a_2^{(n_L-2)}}{\text{constant}} + \cdots + \bracetext{w_{ij}^{(n_L-1)}a_j^{(n_L-2)}}{\text{not constant}} + \cdots + \bracetext{w_{in}^{(n_L-1)}a_n^{(n_L-2)}}{\text{constant}}
+	z_i^{(L)} = \bracetext{b_i^{(L)}}{\text{constant}} + \bracetext{w_{i,1}^{(L)}a_1^{(L-1)}}{\text{constant}} + \bracetext{w_{i,2}^{(L)}a_2^{(L-1)}}{\text{constant}} + \cdots + \bracetext{w_{ij}^{(L)}a_j^{(L-1)}}{\text{not constant}} + \cdots + \bracetext{w_{in}^{(L)}a_n^{(L-1)}}{\text{constant}}
 \]
 
 \noindent
 Therefore,
 \[
-	\DD{z_i^{(n_L-1)}}{w_{ij}^{(n_L-1)}} = a_j^{(n_L-2)}
+	\DD{z_i^{(L)}}{w_{ij}^{(L)}} = a_j^{(L-1)}
 \]
 
 \noindent
 Thus, putting this all together,
 \[
-	\Delta w_{ij}^{(n_L-1)} = -\veps \DD{C}{a_i^{(n_L-1)}} \sigma'\left(z_i^{(n_L-1)}\right)a_j^{(n_L-2)},
+	\Delta w_{ij}^{(L)} = -\veps \DD{C}{a_i^{(L)}} \sigma'\left(z_i^{(L)}\right)a_j^{(L-1)},
 \]
 
 where $\veps$ is a chosen proportionality constant (usually referred to as the \textbf{learning rate}) of the model. For the sake of readability (and consistency with the widely accepted equations), we'll factor out some terms into a new variable, which we'll call $\delta$:
 \[
-	\delta_i^{(n_L-1)} = \DD{C}{a_i^{(n_L-1)}}\sigma'\left( z_i^{(n_L-1)} \right)
+	\delta_i^{(L)} = \DD{C}{a_i^{(L)}}\sigma'\left( z_i^{(L)} \right)
 \]
 
 This indexing is just begging us to turn $\delta$ into a vector, and we can do so by introducing the \textit{Hadamard product} (that is, the multiplication of two vectors that is done component-wise), which is denoted with $\odot$. This cleans things up significantly:
 \[
-	\delta^{(n_L-1)} = \grad_{\bfa} C\odot \sigma'\left(\bfz^{(n_L-1)}\right)
+	\delta^{(L)} = \grad_{\bfa} C\odot \sigma'\left(\bfz^{(L)}\right)
 \]
 
-The $\bfa$ in the subscript of the gradient indicates that we're differentiating with respect to the activation (and not the target). For notational simplicity, it is implied that $\bfa$ is the activation in the last layer ($\bfa^{(n_L-1)}$ formally). 
+The $\bfa$ in the subscript of the gradient indicates that we're differentiating with respect to the activation (and not the target). For notational simplicity, it is implied that $\bfa$ is the activation in the last layer ($\bfa^{(L)}$ formally). 
 
-With this new notation, the expression for $\Delta \bfW^{(n_L-1)}$ gets considerably simplified:
+With this new notation, the expression for $\Delta \bfW^{(L)}$ gets considerably simplified:
 \[
-	\Delta \bfW^{(n_L-1)} = -\veps \delta^{(n_L-1)}\parens{\bfa^{(n_L-2)}}^T
+	\Delta \bfW^{(L)} = -\veps \delta^{(L)}\parens{\bfa^{(L-1)}}^T
 \]
 
-A few things are worth clarifying in this equation. First, the order here \textit{is} important, and second, the transpose is used because we need an \textit{outer product}; that is, a product between two vectors that returns a matrix. In our case, the expression $\delta^{(n_L-1)}\parens{\bfa^{(n_L-2)}}^T$ gives us a matrix of the following form:
+A few things are worth clarifying in this equation. First, the order here \textit{is} important, and second, the transpose is used because we need an \textit{outer product}; that is, a product between two vectors that returns a matrix. In our case, the expression $\delta^{(L)}\parens{\bfa^{(L-1)}}^T$ gives us a matrix of the following form:
 \[
 	\begin{bmatrix}
 		\delta_1a_1 & \delta_1a_2 & \delta_1a_3 & \cdots & \delta_1a_n\\
@@ -674,7 +673,90 @@ A few things are worth clarifying in this equation. First, the order here \texti
 	\end{bmatrix},
 \]
 
-where $m$ is the number of neurons in the last layer (layer $n_L-1$) and $n$ is the number of neurons in the layer before that (layer $n_L-2$).
+where $m$ is the number of neurons in the last layer (layer $L$) and $n$ is the number of neurons in the layer before that (layer $L-1$).
+
+\subsection*{Biases in the last layer}
+
+With that out of the way, and one of the equations derived, we can move on to the next thing to determine: how we should change the \textit{biases} for the last layer. In a very similar way to how we worked with the weights, we'll set up the equation for $\delta b_i^{(L)}$ using the proportionality discussed earlier:
+\[
+	\delta b_i^{(L)} \propto -\DD{C}{b_i^{(L)}}
+\]
+
+Just like before, we'll use the chain rule to expand the derivative:
+\[
+	\DD{C}{b_i^{(L)}} = \DD{C}{a_i^{(L)}}\DD{a_i^{(L)}}{z_i^{(L)}}\DD{z_i^{(L)}}{b_i^{(L)}}
+\]
+
+Once again, we can't expand the first term, but we can expand the second in exactly the same way as before:
+\[
+	\DD{a_i^{(L)}}{z_i^{(L)}} = \sigma'\left( z_i^{(L)} \right)
+\]
+
+And for the last term, it actually comes out to be 1, since the entire summation in $z_i^{(L)}$ doesn't depend on $b_i^{(L)}$ at all, and the coefficient next to the only bias term is 1. Thus, we get the very pleasing result that
+\[
+	\DD{C}{\bfb^{(L)}} = \delta^{(L)},
+\]
+
+which means that
+\[
+	\Delta \bfb^{(L)} = -\veps\delta^{(L)}.
+\]
+
+\subsection*{The hidden layers}
+
+For the hidden layers, the math gets a little bit more hairy, since we're essentially following a recursive algorithm. From this point onward, we will disregard notational rigor in favor of comprehension. Before we begin, let's recap what we want to figure out. For some layer $\ell$, we want to determine these formulas:
+\begin{align*}
+	\DD{C}{\bfW^{(\ell)}} &= \DD{C}{\bfz^{(\ell)}} \DD{\bfz^{(\ell)}}{\bfW^{(\ell)}}\\ 
+	\DD{C}{\bfb^{(\ell)}} &= \DD{C}{\bfz^{(\ell)}} \DD{\bfz^{(\ell)}}{\bfb^{(\ell)}}
+\end{align*}
+
+To do so, we need 4 things:
+\begin{itemize}
+	\item $\dps{\DD{C}{\bfz^{(L)}}}$ (for the recursive base case)
+	\item $\dps{\DD{C}{\bfz^{(\ell)}}}$
+	\item $\dps{\DD{\bfz^{(\ell)}}{\bfW^{(\ell)}}}$
+	\item $\dps{\DD{\bfz^{(\ell)}}{\bfb^{(\ell)}}}$
+\end{itemize}
+
+It may not seem like it, but we already know what $\dps{\DD{C}{\bfz^{(L)}}}$ is. It is very easy to see that it is exactly $\delta^{(L)}$. Therefore, 
+\[
+	\DD{C}{\bfz^{(L)}} = \delta^{(L)} = \DD{C}{\bfa^{(L)}}\odot \sigma'\left( \bfz^{(L)} \right)
+\]
+
+It follows that $\dps{\DD{C}{\bfz^{(\ell)}} = \delta^{(\ell)}}$, but it's a lot less obvious how we'd calculate this. The trick is to notice that we can define them recursively like this:
+\[
+	\DD{C}{\bfz^{(\ell)}} = \DD{C}{\bfz^{(\ell+1)}}\DD{\bfz^{(\ell+1)}}{\bfa^{(\ell)}}\DD{\bfa^{(\ell)}}{\bfz^{(\ell)}}
+\]
+
+Now, we have a starting condition and we can work our way back layer by layer until we reach the beginning (this is where the name ``backpropagation'' comes from). Of course, the first term is the recursive step, so we can substitute in $\delta^{(\ell+1)}$. For the second term, if we simply write out the expression for $\bfz^{(\ell+1)}$, we have
+\[
+	\bfz^{(\ell+1)} = \bfW^{(\ell+1)}\bfa^{(\ell)} + \bfb^{(\ell+1)}
+\]
+
+Therefore, $\dps{\DD{\bfz^{(\ell+1)}}{\bfa^{(\ell)}} = \bfW^{(\ell+1)}}$. Finally, $\dps{\DD{\bfa^{(\ell)}}{\bfz^{(\ell)}} = \sigma'\left( \bfz^{(\ell)} \right)}$. 
+
+\vspace{12pt}
+
+There's one little subtlety we need to address, however. The matrix $\bfW^{(\ell+1)}$ has dimensions $n_{\ell+1}\times n_{\ell}$, but the vector $\delta^{(\ell+1)}$ has dimensions $n_{\ell+1}\times 1$. In order to make their multiplication valid, we have to transpose the weight matrix. This makes sense intuitively, since the rows correspond to the output and the columns correspond to the input, so transposing it is reversing their order, which is exactly what we're doing by traversing the network backwards.
+
+Putting this all together, 
+\[
+	\delta^{(\ell)} = \parens{\parens{\bfW^{(\ell+1)}}^T \delta^{(\ell+1)}}\odot \sigma'\left( \bfz^{(\ell)} \right)
+\]
+
+That's the hard part over with, so now we just have the two other derivatives which are the same as in the output layer case, namely
+\begin{align*}
+	\DD{\bfz^{(\ell)}}{\bfW^{(\ell)}} &= \bfa^{(\ell-1)}\\
+	\DD{\bfz^{(\ell)}}{\bfb^{(\ell)}} &= 1
+\end{align*}
+
+Putting everything together, we get the four iconic equations of backpropagation:
+\begin{align*}
+	\delta^{(L)} &= \grad_{\bfa^{(L)}}C \odot \sigma'\left( \bfz^{(L)} \right) && (\text{BP1})\\
+	\delta^{(\ell)} &= \parens{\parens{\bfW^{(\ell+1)}}^T\delta^{(\ell+1)}}\odot \sigma'\left( \bfz^{(\ell)} \right)&& (\text{BP2})\\
+	\Delta\bfW^{(\ell)} &= -\veps \delta^{(\ell)}\parens{\bfa^{(\ell-1)}}^T&& (\text{BP3})\\
+	\Delta\bfb^{(\ell)} &= -\veps \delta^{(\ell)}&& (\text{BP4})
+\end{align*}
 
 % \begin{figure}[ht]
 % 	\centering

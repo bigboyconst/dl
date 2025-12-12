@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.10)  12 DEC 2025 09:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.10)  12 DEC 2025 14:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1293,20 +1293,19 @@ contour: Using real outline for `$w_{2,3}^{(1)}$' on input line 438.
 contour: Using real outline for `$w_{2,4}^{(1)}$' on input line 438.
 contour: Using real outline for `$w_{2,n}^{(1)}$' on input line 438.
 [4] [5]
-Package hyperref Info: bookmark level for unknown toc defaults to 0 on input li
-ne 500.
 LaTeX Font Info:    External font `mlmex10' loaded for size
-(Font)              <5> on input line 534.
+(Font)              <5> on input line 533.
  [6]
 Chapter 2.
 [7
 
-] [8] [9] [10]
+] [8] [9] [10] [11] [12]
 LaTeX Font Info:    Trying to load font information for OT1+mlmtt on input line
- 774.
- (/usr/share/texlive/texmf-dist/tex/latex/mlmodern/ot1mlmtt.fd
+ 856.
+
+(/usr/share/texlive/texmf-dist/tex/latex/mlmodern/ot1mlmtt.fd
 File: ot1mlmtt.fd 2021/01/11 v1.0 Font defs for mlmodern
-) [11
+) [13
 
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-rmtt.enc}{/usr/share/texmf/fonts/enc/dv
 ips/lm/lm-rmsc.enc}] (./mlp.aux)
@@ -1314,25 +1313,18 @@ ips/lm/lm-rmsc.enc}] (./mlp.aux)
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-Package rerunfilecheck Warning: File `mlp.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `mlp.out':
-(rerunfilecheck)             Before: B7C306480DB03877E7BB0C93283A7F5A;850
-(rerunfilecheck)             After:  0DA8C6189355BBC48C6756CD643728A3;1048.
+Package rerunfilecheck Info: File `mlp.out' has not changed.
+(rerunfilecheck)             Checksum: B7C306480DB03877E7BB0C93283A7F5A;850.
 Package logreq Info: Writing requests to 'mlp.run.xml'.
 \openout1 = `mlp.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 42773 strings out of 474222
- 961429 string characters out of 5748732
+ 42772 strings out of 474222
+ 961396 string characters out of 5748732
  1951975 words of memory out of 5000000
- 64364 multiletter control sequences out of 15000+600000
- 640078 words of font info for 99 fonts, out of 8000000 for 9000
+ 64361 multiletter control sequences out of 15000+600000
+ 634190 words of font info for 97 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  102i,19n,117p,724b,2411s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/google/roboto/Roboto-Bold.pfb></us
@@ -1343,21 +1335,20 @@ st/fonts/type1/public/mlmodern/mlmex10.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/mlmodern/mlmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
 ublic/mlmodern/mlmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ml
 modern/mlmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mlmodern/ml
-mmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmmi8.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmr10.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmr12.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/mlmodern/mlmr17.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/mlmodern/mlmr6.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/mlmodern/mlmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/mlmodern/mlmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mlmoder
-n/mlmri12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmsy1
-0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmsy8.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmtt12.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on mlp.pdf (12 pages, 311358 bytes).
+mmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmr10.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmr12.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmr17.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/mlmodern/mlmr6.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/public/mlmodern/mlmr8.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/mlmodern/mlmri12.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/mlmodern/mlmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mlmo
+dern/mlmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/mlmodern/mlmt
+t12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm
+10.pfb>
+Output written on mlp.pdf (14 pages, 299673 bytes).
 PDF statistics:
- 229 PDF objects out of 1000 (max. 8388607)
- 163 compressed objects within 2 object streams
- 27 named destinations out of 1000 (max. 500000)
+ 228 PDF objects out of 1000 (max. 8388607)
+ 164 compressed objects within 2 object streams
+ 30 named destinations out of 1000 (max. 500000)
  45 words of extra memory for PDF output out of 10000 (max. 10000000)
 
