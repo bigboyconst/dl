@@ -9,7 +9,7 @@ __global__ void cuLA_vecAdd(Vector u, Vector v, Vector w) {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (i < u.size) {
-		w.at_ref(i) = u.at(i) + v.at(i);
+		w.elements[i] = u.elements[i] + v.elements[i];
 	}
 }
 
@@ -17,7 +17,7 @@ __global__ void cuLA_vecSub(Vector u, Vector v, Vector w) {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (i < u.size) {
-		w.at_ref(i) = u.at(i) - v.at(i);
+		w.elements[i] = u.elements[i] - v.elements[i];
 	}
 }
 

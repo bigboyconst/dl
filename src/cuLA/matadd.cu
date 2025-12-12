@@ -5,18 +5,20 @@
 __global__ void cuLA_matAdd(cuLA::Matrix A, cuLA::Matrix B, cuLA::Matrix C) {
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
+	int index = row * A.cols + col;
 
-	if (i < A.rows && j < A.cols) {
-		C.at_ref(row, col) = A.at(row, col) + B.at(row, col);
+	if (row < A.rows && col < A.cols) {
+		C.elements[index] = A.elements[index] + B.elements[index];
 	}
 }
 
 __global__ void cuLA_matSub(cuLA::Matrix A, cuLA::Matrix B, cuLA::Matrix C) {
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
+	int index = row * A.cols + col;
 
-	if (i < A.rows && j < A.cols) {
-		C.at_ref(row, col) = A.at(row, col) - B.at(row, col);
+	if (row < A.rows && col < A.cols) {
+		C.elements[index] = A.elements[index] - B.elements[index];
 	}
 }
 

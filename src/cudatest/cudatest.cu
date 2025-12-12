@@ -2,8 +2,7 @@
 #include <iostream>
 #include <cstdio>
 #include <chrono>
-#include "../cuLA/Matrix.hpp"
-#include "../cuLA/matmul.cu"
+#include "../cuLA/cuLA.cu"
 
 #define TILE_SIZE CULA_TILE_SIZE
 
