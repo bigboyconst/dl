@@ -7,7 +7,7 @@
 
 \usepackage[
 	top=3cm,
-	bottom=2cm,
+	bottom=3cm,
 	left=1.5cm,
 	right=1.5cm
 ]{geometry}
@@ -203,6 +203,20 @@
 \DeclareMathOperator{\GELU}{GELU}
 \DeclareMathOperator{\erf}{erf}
 
+% Macro for gradient
+\newcommand{\grad}{\nabla}
+
+\newcommand{\dd}[2]{\frac{d #1}{d #2}}
+\newcommand{\ddn}[3]{\frac{d^{#3} #1}{{d#2}^{#3}}}
+\newcommand{\DD}[2]{\frac{\partial #1}{\partial #2}}
+% no completion in denominator in order to support mixed partials
+\newcommand{\DDN}[3]{\frac{\partial^{#3} #1}{#2}}
+\newcommand{\dps}[1]{{\displaystyle #1}}
+
+\newcommand{\veps}{\varepsilon}
+
+\newcommand{\bracetext}[2]{\underset{#2}{\underbrace{#1}}}
+
 % =============================================
 % NEURAL NETWORK DRAWING LOGIC 
 % https://tikz.net/neural_networks/
@@ -325,12 +339,12 @@ The actual math behind these networks is surprisingly simple. We'll focus on a s
 
 \begin{figure}[ht]
 	\centering
-	\begin{tikzpicture}
+	\begin{tikzpicture}[y=1.4cm]
 		\def\NI{5}
 		\node[node 3] (second) at (2, 0) {$a_1^{(1)}$};
 		\foreach \i [evaluate={\y=(\NI + 1) / 2 - \i; \index = int(\i)}] in {1,...,\NI} {
 			\node[node 1] (NI-\i) at (-2, \y) {$a_{\index}^{(0)}$};
-			\draw[connect] (NI-\i) -- (second) node[midway] {\contour{white}{$w_{1,\index}$}};
+			\draw[connect] (NI-\i) -- (second) node[midway] {\contour{white}{$w_{1,\index}^{(1)}$}};
 		}
 	\end{tikzpicture}
 	\caption{The activation of two neurons and the weight between them.}
@@ -340,18 +354,18 @@ The actual math behind these networks is surprisingly simple. We'll focus on a s
 Let's decypher these symbols one-by-one:
 \begin{itemize}
 	\item ${\color{mydarkgreen} a_n^{(0)}}$: The activations of the nodes within the first layer.
-	\item ${\color{mydarkblue} w_{1,n}}$: The \textbf{weights} of each of the connections. Essentially, this encodes how strongly connected the neurons are (so how much they influence each-other).
+	\item ${\color{mydarkblue} w_{1,n}^{(1)}}$: The \textbf{weights} of each of the connections. Essentially, this encodes how strongly connected the neurons are (so how much they influence each-other).
 	\item ${\color{mydarkred} a_1^{(1)}}$: The output activation.
 \end{itemize}
 
-In order to determine the output activation $a_1^{(1)}$ from the input activations $a_i^{(0)}$, we simply take a weighted sum whose weights are the coefficients $w_{1,i}$; that is,
+In order to determine the output activation $a_1^{(1)}$ from the input activations $a_i^{(0)}$, we simply take a weighted sum whose weights are the coefficients $w_{1,i}^{(1)}$; that is,
 \[
-	{\color{mydarkred} a_1^{(1)}} = {\color{mydarkblue} w_{1,1}}{\color{mydarkgreen} a_1^{(0)}} + {\color{mydarkblue} w_{1,2}}{\color{mydarkgreen} a_2^{(0)}} + \cdots + {\color{mydarkblue} w_{1,5}}{\color{mydarkgreen} a_5^{(0)}}
+	{\color{mydarkred} a_1^{(1)}} = {\color{mydarkblue} w_{1,1}^{(1)}}{\color{mydarkgreen} a_1^{(0)}} + {\color{mydarkblue} w_{1,2}^{(1)}}{\color{mydarkgreen} a_2^{(0)}} + \cdots + {\color{mydarkblue} w_{1,5}^{(1)}}{\color{mydarkgreen} a_5^{(0)}}
 \]
 
 Usually we also add in what's called a \textbf{bias} term, which is just a value that we add to this sum. We can interpret the bias as the ``sensitivity'' of the neuron. That means that the whole expression in the general case (so, for $n$ neurons in the input layer) is
 \[
-	{\color{mydarkred} a_1^{(1)}} = {\color{mydarkpurple}b_1^{(0)}} + \sum_{i=1}^{n}{\color{mydarkblue} w_{1,i}}{\color{mydarkgreen} a_i^{(0)}}
+	{\color{mydarkred} a_1^{(1)}} = {\color{mydarkpurple}b_1^{(1)}} + \sum_{i=1}^{n}{\color{mydarkblue} w_{1,i}^{(1)}}{\color{mydarkgreen} a_i^{(0)}}
 \]
 
 There's only one issue: Remember we said that the activations must be between 0 and 1, but with a weighted sum like this, we can essentially get any number. What we need now is some kind of way to squish this value into the range $[0,1]$. The most common function for this purpose is the \textbf{sigmoid} function:
@@ -382,7 +396,7 @@ The graph of this function is shown below:
 
 From \reffig{fig:sigmoid-graph}, we can see how the function approaches 0 when $x$ is negative, and approaches 1 when $x$ is positive. This is exactly what we needed! Putting all of this together, we have the following expression for ${\color{mydarkred}a_1^{(1)}}$:
 \[
-	{\color{mydarkred}a_1^{(1)}} = {\color{mydarkred}\sigma}{\color{mydarkred}\Bigg(}{\color{mydarkpurple}b_1^{(0)}}{\color{black} + \sum_{i=1}^{n}}{\color{mydarkblue}w_{1,i}}{\color{mydarkgreen}a_i^{(0)}}{\color{mydarkred}\Bigg)}
+	{\color{mydarkred}a_1^{(1)}} = {\color{mydarkred}\sigma}{\color{mydarkred}\Bigg(}{\color{mydarkpurple}b_1^{(1)}}{\color{black} + \sum_{i=1}^{n}}{\color{mydarkblue}w_{1,i}^{(1)}}{\color{mydarkgreen}a_i^{(0)}}{\color{mydarkred}\Bigg)}
 \]
 
 Remember, this is just for the activation of a \textit{single} neuron, so for a whole layer, we need to do this many times. There is a way we can simplify this, but we'll need to consider the more general case in order to do so.
@@ -420,7 +434,7 @@ Remember, this is just for the activation of a \textit{single} neuron, so for a 
 
 		\foreach \j [evaluate={\indexin=(\j < \NI ? int(\j) : "n");}] in {1,...,\NI}{
 			\draw[connect, white, line width = 1.2] (NI-\j) -- (NO-\NodeFocused);
-			\draw[connect] (NI-\j) -- (NO-\NodeFocused) node[midway] {\contour{white}{$w_{\indexout,\indexin}$}};
+			\draw[connect] (NI-\j) -- (NO-\NodeFocused) node[midway] {\contour{white}{$w_{\indexout,\indexin}^{(1)}$}};
 		}
 
 		\path[color=mydarkgreen] (NI-\NI) --++ (0,0.95+\yshift) node[midway,scale=1.2] {$\vdots$};
@@ -454,11 +468,11 @@ We can do the same thing for the output activations:
 \noindent
 Similarly, we can group the biases up into a vector as well:
 \[
-	{\color{mydarkpurple} \bfb^{(0)}} = {\color{mydarkpurple}\begin{bmatrix}
-			b_1^{(0)}\\
-			b_2^{(0)}\\
+	{\color{mydarkpurple} \bfb^{(1)}} = {\color{mydarkpurple}\begin{bmatrix}
+			b_1^{(1)}\\
+			b_2^{(1)}\\
 			\vdots\\
-			b_m^{(0)}
+			b_m^{(1)}
 		\end{bmatrix}}
 \]
 
@@ -466,19 +480,19 @@ Similarly, we can group the biases up into a vector as well:
 Finally, the weights simply become a matrix which we multiply with ${\color{mydarkgreen}\bfa^{(0)}}$:
 
 \[
-	{\color{mydarkblue} \bfW^{(0)}} = {\color{mydarkblue}\begin{bmatrix}
-			w_{1,1} && w_{1,2} && w_{1,3} && \cdots && w_{1,n}\\
-			w_{2,1} && w_{2,2} && w_{2,3} && \cdots && w_{2,n}\\
-			w_{3,1} && w_{3,2} && w_{3,3} && \cdots && w_{3,n}\\
-			\vdots  && \vdots  && \vdots  && \ddots && \vdots \\
-			w_{m,1} && w_{m,2} && w_{m,3} && \cdots && w_{m,n}
+	{\color{mydarkblue} \bfW^{(1)}} = {\color{mydarkblue}\begin{bmatrix}
+			w_{1,1}^{(1)} & w_{1,2}^{(1)} & w_{1,3}^{(1)} & \cdots & w_{1,n}^{(1)}\\
+			w_{2,1}^{(1)} & w_{2,2}^{(1)} & w_{2,3}^{(1)} & \cdots & w_{2,n}^{(1)}\\
+			w_{3,1}^{(1)} & w_{3,2}^{(1)} & w_{3,3}^{(1)} & \cdots & w_{3,n}^{(1)}\\
+			\vdots  & \vdots & \vdots  & \ddots & \vdots \\
+			w_{m,1}^{(1)} & w_{m,2}^{(1)} & w_{m,3}^{(1)} & \cdots & w_{m,n}^{(1)}
 		\end{bmatrix}}
 \]
 
 \noindent
 Now, if we imply that the function $\sigma(x)$ applies component-wise to vectors and matrices, we get the following incredibly neat formula for the activations in layer $L + 1$ given those in layer $L$:
 \[
-	{\color{mydarkred}\bfa^{(L+1)}} = {\color{mydarkred}\sigma}{\color{mydarkred}\big(}{\color{mydarkpurple}\bfb^{(L)}} + {\color{mydarkblue}\bfW^{(L)}}{\color{mydarkgreen}\bfa^{(L)}}{\color{mydarkred}\big)}
+	{\color{mydarkred}\bfa^{(L+1)}} = {\color{mydarkred}\sigma}{\color{mydarkred}\big(}{\color{mydarkpurple}\bfb^{(L+1)}} + {\color{mydarkblue}\bfW^{(L+1)}}{\color{mydarkgreen}\bfa^{(L)}}{\color{mydarkred}\big)}
 \]
 
 \newpage
@@ -539,6 +553,128 @@ where
 	\erf(x) = \int_0^x e^{-s^2}ds
 \]
 is the error function.
+
+\chapter{Backpropagation: How Neural Networks Learn}
+
+This chapter is all about one of the most important algorithms in deep learning: backpropagation. Essentially, this is how a neural network is able to ``learn'' from its training data. At a high level, the way it works is that it takes the prediction of the model, compares it with the expected output, and uses how far they are from each other to adjust the weights and biases of the model.
+
+\section{Cost or Loss Functions}
+
+At the core of backpropagation is the idea of a \textbf{cost function} or \textbf{loss function}. This is the function which, given the model's prediction and the target value, returns some number indicating how badly the model performed. Then, once we have this mysterious function, backpropagation comes down to a simple optimization problem -- we'll want to minimize whatever this function is.
+
+There are tons of loss functions out there, but the two most common ones are MSE (mean squared error) loss and cross-entropy loss. MSE loss is good for general purpose models, whilst cross-entropy is specifically designed for models whose objective is some sort of classification (such as for the classic MNIST model).
+
+\vspace{12pt}
+
+The definition for MSE loss is quite straightforward. Given a model output $\bfy$ and a target output $\hat{\bfy}$, the MSE loss is simply the average of their squared difference. Mathematically, assuming that $\bfy,\hat{\bfy}\in\bbR^n$,
+\[
+	\text{MSE} = \frac{1}{n} \sum_{i=1}^n (y_i - \hat{y}_i)^2 
+\]
+
+The main reason this is such a popular choice is that it's incredibly easy to differentiate, since it's just a power. It's also very intuitive: the amount the model deviates from the target is just the average difference between its output and the target, and we square it so that the values are all positive while keeping the function differentiable. 
+
+\vspace{12pt}
+
+Cross-entropy, on the other hand, has a few nuances that we'll dig into later. As we said earlier, cross-entropy is used as a loss function for classification models. These are models whose outputs are vectors of probabilities (so, values between 0 and 1) indicating which of the ``classes,'' as they're called, the model believes the input belongs to. Suppose that our model has $n$ classes and an output vector $\bfp$ of its predicted probabilities for each of the classes. Then, the cross-entropy loss for this output is
+\[
+	\text{CE} = -\sum_{c=1}^n y_c \log(p_c)
+\]
+
+The vector $\bfy$ here is the vector of expected probabilities. It may well be one-hot (meaning that only one component is equal to 1 while the others are zero), in which case this simplifies down to $\text{CE} = -\log(p_c)$, where $c$ is the correct class, but that is not always the case. In some classification tasks, labels are not 100\% in one class, they might be in some kind of superposition state.
+
+The nuances with cross-entropy come down to the activation functions used. We can use whichever activation function we want in our model, but we have to use a very specific activation function on the final layer before calculating the cross-entropy. This function is called the \textbf{softmax} function. It is defined as 
+\[
+	\softmax(\bfx) = \bracks{\frac{e^{x_i}}{\sum_j e^{x_j}}}
+\]
+
+Essentially, we exponentiate each component of the vector, and divide it by the sum of all the other exponentiated components. This gives us a vector with values between 0 and 1 which also adds up to 1 (thus making it a valid probability distribution). The exact reason why we're exponentiating is that it handles negative values properly, by making them very small but also positive. If we just took each component over the sum of the vector, we'd get negative values, which are not valid probabilities.
+
+\section{Deriving Backpropagation}
+
+Now that we know what cost functions are, how can we use them to determine how much we need to change each of our parameters by to increase the result. This is effectively just a calculus problem: we want to minimize some function $C(\bfa^{(n_L - 1)}, \bfy)$ of the activations in the last layer\footnote{We use $n_L - 1$ as the layer number for the last layer since $n_L$ is the number of layers and the convention is that layers start at 0, not 1.} and the target output. 
+
+\vspace{12pt}
+
+We'll also introduce a common piece of notation: we use $\bfz^{(L)}$ to denote the input to the activation function of the model; that is, $\bfz^{(L)} = {\color{mydarkblue}\bfW^{(L)}}{\color{mydarkgreen}\bfa^{(L-1)}} + {\color{mydarkpurple}\bfb^{(L)}}$. This notation will be useful later on.
+
+\subsection{Weights in the last layer}
+
+Our goal is essentially to adjust the weights and biases so as to decrease the value of the loss function. That means that, putting aside rigor for a moment, the variation in our model's weights $W$ and biases $B$ should look something like this:
+\begin{align*}
+	\Delta W &\propto -\DD{C}{W}\\
+	\Delta B &\propto -\DD{C}{B}
+\end{align*}
+
+We'll start by looking at the output layer at a specific weight $w_{ij}^{(n_L-1)}$. From the equations above, 
+\[
+	\Delta w_{ij}^{(n_L-1)} \propto -\DD{C}{w_{ij}^{(n_L-1)}}
+\]
+
+However, the cost function is not directly related to the weight, so we need to apply the chain rule until we reach the input of the function. Recall that
+\[
+	a_i^{(n_L-1)} = \sigma\left(b_i^{(n_L-1)} + \sum_j w_{ij}^{(n_L-1)}a_j^{(n_L-2)} \right) = \sigma\left(z_i^{(n_L-1)}\right)
+\]
+
+This means that, according to the chain rule, 
+\[
+	\DD{C}{w_{ij}^{(n_L-1)}} = \DD{C}{a_i^{(n_L-1)}}\DD{a_i^{(n_L-1)}}{z_i^{(n_L-1)}}\DD{z_i^{(n_L-1)}}{w_{ij}^{(n_L-1)}}
+\]
+
+We'll evaluate each of these derivatives one-by-one until we get an exact expression for $\Delta w_{ij}^{(n_L-1)}$. Firstly, since we're working generally, we can't really simplify the derivative of the cost function relative to the activation (as that will ultimately depend on the cost function used). However, we can somewhat reduce $\dps{\DD{a_i^{(n_L-1)}}{z_i^{(n_L-1)}}}$:
+\[
+	\DD{a_i^{(n_L-1)}}{z_i^{(n_L-1)}} = \sigma'\left(z_i^{(n_L-1)}\right)
+\]
+
+Unfortunately, since we want to be as general as possible, we can't really reduce the expression any more since we don't know what the activation function is.
+
+\vspace{12pt}
+
+Finally, we can get an actual exact expression for $\dps{\DD{z_i^{(n_L-1)}}{w_{ij}^{(n_L-1)}}}$. The crucial thing to notice is that only one of the terms in the sum that defines $z$ will have a nonzero derivative with respect to the weight, and that's the term with that specific weight in it:
+\[
+	z_i^{(n_L-1)} = \bracetext{b_i^{(n_L-1)}}{\text{constant}} + \bracetext{w_{i,1}^{(n_L-1)}a_1^{(n_L-2)}}{\text{constant}} + \bracetext{w_{i,2}^{(n_L-1)}a_2^{(n_L-2)}}{\text{constant}} + \cdots + \bracetext{w_{ij}^{(n_L-1)}a_j^{(n_L-2)}}{\text{not constant}} + \cdots + \bracetext{w_{in}^{(n_L-1)}a_n^{(n_L-2)}}{\text{constant}}
+\]
+
+\noindent
+Therefore,
+\[
+	\DD{z_i^{(n_L-1)}}{w_{ij}^{(n_L-1)}} = a_j^{(n_L-2)}
+\]
+
+\noindent
+Thus, putting this all together,
+\[
+	\Delta w_{ij}^{(n_L-1)} = -\veps \DD{C}{a_i^{(n_L-1)}} \sigma'\left(z_i^{(n_L-1)}\right)a_j^{(n_L-2)},
+\]
+
+where $\veps$ is a chosen proportionality constant (usually referred to as the \textbf{learning rate}) of the model. For the sake of readability (and consistency with the widely accepted equations), we'll factor out some terms into a new variable, which we'll call $\delta$:
+\[
+	\delta_i^{(n_L-1)} = \DD{C}{a_i^{(n_L-1)}}\sigma'\left( z_i^{(n_L-1)} \right)
+\]
+
+This indexing is just begging us to turn $\delta$ into a vector, and we can do so by introducing the \textit{Hadamard product} (that is, the multiplication of two vectors that is done component-wise), which is denoted with $\odot$. This cleans things up significantly:
+\[
+	\delta^{(n_L-1)} = \grad_{\bfa} C\odot \sigma'\left(\bfz^{(n_L-1)}\right)
+\]
+
+The $\bfa$ in the subscript of the gradient indicates that we're differentiating with respect to the activation (and not the target). For notational simplicity, it is implied that $\bfa$ is the activation in the last layer ($\bfa^{(n_L-1)}$ formally). 
+
+With this new notation, the expression for $\Delta \bfW^{(n_L-1)}$ gets considerably simplified:
+\[
+	\Delta \bfW^{(n_L-1)} = -\veps \delta^{(n_L-1)}\parens{\bfa^{(n_L-2)}}^T
+\]
+
+A few things are worth clarifying in this equation. First, the order here \textit{is} important, and second, the transpose is used because we need an \textit{outer product}; that is, a product between two vectors that returns a matrix. In our case, the expression $\delta^{(n_L-1)}\parens{\bfa^{(n_L-2)}}^T$ gives us a matrix of the following form:
+\[
+	\begin{bmatrix}
+		\delta_1a_1 & \delta_1a_2 & \delta_1a_3 & \cdots & \delta_1a_n\\
+		\delta_2a_1 & \delta_2a_2 & \delta_2a_3 & \cdots & \delta_2a_n\\
+		\delta_3a_1 & \delta_3a_2 & \delta_3a_3 & \cdots & \delta_3a_n\\
+		\vdots & \vdots & \vdots & \ddots & \vdots\\
+		\delta_ma_1 & \delta_ma_2 & \delta_ma_3 & \cdots & \delta_ma_n
+	\end{bmatrix},
+\]
+
+where $m$ is the number of neurons in the last layer (layer $n_L-1$) and $n$ is the number of neurons in the layer before that (layer $n_L-2$).
 
 % \begin{figure}[ht]
 % 	\centering
