@@ -1,3 +1,0 @@
-[submodule "src/thirdparty/cuMat"]
-	path = src/thirdparty/cuMat
-	url = https://github.com/shamanDevel/cuMat.git
