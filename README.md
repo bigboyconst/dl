@@ -28,3 +28,7 @@ The already-provided binary is an ELF64 executable and won't work on windows. Yo
 gcc -o nob.exe nob.c
 ./nob
 ```
+
+## General information
+
+This project contains a basic GPU linear algebra library called `cuLA` (**CU**DA **L**inear **A**lgebra). The general structure is very simple. The `src/cuLA` folder contains cuda files each outlining some routine used for calculations in linear algebra

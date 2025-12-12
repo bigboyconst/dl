@@ -5,7 +5,6 @@
 #define BUILD_DIR "build/"
 #define SRC_DIR "src/"
 #define THIRDPARTY_DIR "src/thirdparty/"
-#define CUMAT_INCLUDE THIRDPARTY_DIR"cuMat/"
 
 // This is so fucking cursed bro
 typedef struct {
@@ -23,7 +22,6 @@ const char* targets[] = {
 void nvcc(Cmd* cmd, const char* target, const char** sources) {
 	cmd_append(cmd, "nvcc", "-o", temp_sprintf(BUILD_DIR"%s", target));
 	cmd_append(cmd, "-I"THIRDPARTY_DIR);
-	cmd_append(cmd, "-I"CUMAT_INCLUDE);
 
 	for (size_t i = 0; i < NOB_ARRAY_LEN(sources); i++) {
 		cmd_append(cmd, temp_sprintf(SRC_DIR"%s/%s", target, sources[i]));
