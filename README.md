@@ -13,8 +13,17 @@ The project structure looks something like this:
 
 ## Build instructions
 
+**Linux**
+
 To build the project, simply run
 ```bash
 $ ./nob
 ```
 from the root directory.
+
+**Windows**
+The already-provided binary is an ELF64 executable and won't work on windows. You'll need to first compile nob into a PAC executable
+```shell
+gcc -o nob.exe nob.c
+./nob
+```
