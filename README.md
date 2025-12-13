@@ -31,4 +31,4 @@ gcc -o nob.exe nob.c
 
 ## General information
 
-This project contains a basic GPU linear algebra library called `cuLA` (**CU**DA **L**inear **A**lgebra). The general structure is very simple. The `src/cuLA` folder contains cuda files each outlining some routine used for calculations in linear algebra
+This project contains a basic GPU linear algebra library called `cuLA` (**CU**DA **L**inear **A**lgebra). 
