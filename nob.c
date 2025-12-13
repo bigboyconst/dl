@@ -22,6 +22,7 @@ const char* targets[] = {
 void nvcc(Cmd* cmd, const char* target, const char** sources) {
 	cmd_append(cmd, "nvcc", "-o", temp_sprintf(BUILD_DIR"%s", target));
 	cmd_append(cmd, "-I"THIRDPARTY_DIR);
+	cmd_append(cmd, "-lcublas");
 
 	for (size_t i = 0; i < NOB_ARRAY_LEN(sources); i++) {
 		cmd_append(cmd, temp_sprintf(SRC_DIR"%s/%s", target, sources[i]));

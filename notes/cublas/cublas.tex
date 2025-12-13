@@ -1,0 +1,363 @@
+\nonstopmode
+\documentclass[12pt]{report}
+
+\title{cuBLAS Functions}
+\author{}
+\date{\today}
+
+\usepackage[
+	top=3cm,
+	bottom=3cm,
+	left=1.5cm,
+	right=1.5cm
+]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{listofitems}
+\usepackage{tikz}
+\usepackage{pgf}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[svgnames, dvipsnames, x11names]{xcolor}
+\usepackage[outline]{contour} % glow around text
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+\contourlength{1.4pt}
+
+\usepackage[backend=biber, style=numeric]{biblatex}
+
+\addbibresource{./mlp.bib}
+
+% COLORS
+\colorlet{myred}{red!80!black}
+\colorlet{myblue}{blue!80!black}
+\colorlet{mygreen}{green!60!black}
+\colorlet{myorange}{orange!70!red!60!black}
+\colorlet{mydarkred}{red!30!black}
+\colorlet{mydarkblue}{blue!40!black}
+\colorlet{mydarkgreen}{green!30!black}
+\colorlet{mydarkpurple}{violet!60!black}
+
+\colorlet{mycaptioncol}{myblue!60}
+
+% --------------- FONTS ---------------
+% \usepackage{mathptmx}
+% \usepackage{newtxtext, newtxmath}
+% \usepackage{stix2}
+\usepackage{mlmodern} % A better looking version of the default font
+\usepackage{roboto}
+\usepackage[
+	font={small},
+	justification=justified,
+	labelfont={sf, sc, bf, color=mycaptioncol}
+]{caption}
+% -------------------------------------
+
+\usetikzlibrary{arrows.meta}
+
+% Reduce spacing for modulo
+\renewcommand{\mod}{\;\text{mod}}
+% Change the symbol for a QED
+\renewcommand{\qedsymbol}{\blacksquare}
+
+% Macro for a set
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+% Macro for parentheses
+\newcommand{\parens}[1]{\left( #1 \right)}
+% Macro for angle brackets
+\newcommand{\ang}[1]{\left\langle #1 \right\rangle}
+% Macro for square brackets
+\newcommand{\bracks}[1]{\left[ #1 \right]}
+
+\tikzset{
+	declare function={
+		lerp(\a,\b,\t) = \a + \t * (\b - \a);
+	}
+}
+
+
+% --------- MACROS FOR SYMBOLS ---------
+
+% Define \bbA ... \bbZ for \mathbb
+\newcommand{\bbA}{\mathbb{A}}
+\newcommand{\bbB}{\mathbb{B}}
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
+\newcommand{\bbE}{\mathbb{E}}
+\newcommand{\bbF}{\mathbb{F}}
+\newcommand{\bbG}{\mathbb{G}}
+\newcommand{\bbH}{\mathbb{H}}
+\newcommand{\bbI}{\mathbb{I}}
+\newcommand{\bbJ}{\mathbb{J}}
+\newcommand{\bbK}{\mathbb{K}}
+\newcommand{\bbL}{\mathbb{L}}
+\newcommand{\bbM}{\mathbb{M}}
+\newcommand{\bbN}{\mathbb{N}}
+\newcommand{\bbO}{\mathbb{O}}
+\newcommand{\bbP}{\mathbb{P}}
+\newcommand{\bbQ}{\mathbb{Q}}
+\newcommand{\bbR}{\mathbb{R}}
+\newcommand{\bbS}{\mathbb{S}}
+\newcommand{\bbT}{\mathbb{T}}
+\newcommand{\bbU}{\mathbb{U}}
+\newcommand{\bbV}{\mathbb{V}}
+\newcommand{\bbW}{\mathbb{W}}
+\newcommand{\bbX}{\mathbb{X}}
+\newcommand{\bbY}{\mathbb{Y}}
+\newcommand{\bbZ}{\mathbb{Z}}
+
+
+% Define \bfA ... \bfZ for \mathbf
+\newcommand{\bfA}{\mathbf{A}}
+\newcommand{\bfB}{\mathbf{B}}
+\newcommand{\bfC}{\mathbf{C}}
+\newcommand{\bfD}{\mathbf{D}}
+\newcommand{\bfE}{\mathbf{E}}
+\newcommand{\bfF}{\mathbf{F}}
+\newcommand{\bfG}{\mathbf{G}}
+\newcommand{\bfH}{\mathbf{H}}
+\newcommand{\bfI}{\mathbf{I}}
+\newcommand{\bfJ}{\mathbf{J}}
+\newcommand{\bfK}{\mathbf{K}}
+\newcommand{\bfL}{\mathbf{L}}
+\newcommand{\bfM}{\mathbf{M}}
+\newcommand{\bfN}{\mathbf{N}}
+\newcommand{\bfO}{\mathbf{O}}
+\newcommand{\bfP}{\mathbf{P}}
+\newcommand{\bfQ}{\mathbf{Q}}
+\newcommand{\bfR}{\mathbf{R}}
+\newcommand{\bfS}{\mathbf{S}}
+\newcommand{\bfT}{\mathbf{T}}
+\newcommand{\bfU}{\mathbf{U}}
+\newcommand{\bfV}{\mathbf{V}}
+\newcommand{\bfW}{\mathbf{W}}
+\newcommand{\bfX}{\mathbf{X}}
+\newcommand{\bfY}{\mathbf{Y}}
+\newcommand{\bfZ}{\mathbf{Z}}
+
+\newcommand{\bfa}{\mathbf{a}}
+\newcommand{\bfb}{\mathbf{b}}
+\newcommand{\bfc}{\mathbf{c}}
+\newcommand{\bfd}{\mathbf{d}}
+\newcommand{\bfe}{\mathbf{e}}
+\newcommand{\bff}{\mathbf{f}}
+\newcommand{\bfg}{\mathbf{g}}
+\newcommand{\bfh}{\mathbf{h}}
+\newcommand{\bfi}{\mathbf{i}}
+\newcommand{\bfj}{\mathbf{j}}
+\newcommand{\bfk}{\mathbf{k}}
+\newcommand{\bfl}{\mathbf{l}}
+\newcommand{\bfm}{\mathbf{m}}
+\newcommand{\bfn}{\mathbf{n}}
+\newcommand{\bfo}{\mathbf{o}}
+\newcommand{\bfp}{\mathbf{p}}
+\newcommand{\bfq}{\mathbf{q}}
+\newcommand{\bfr}{\mathbf{r}}
+\newcommand{\bfs}{\mathbf{s}}
+\newcommand{\bft}{\mathbf{t}}
+\newcommand{\bfu}{\mathbf{u}}
+\newcommand{\bfv}{\mathbf{v}}
+\newcommand{\bfw}{\mathbf{w}}
+\newcommand{\bfx}{\mathbf{x}}
+\newcommand{\bfy}{\mathbf{y}}
+\newcommand{\bfz}{\mathbf{z}}
+
+
+% Define \calA ... \calZ for \mathcal
+\newcommand{\calA}{\mathcal{A}}
+\newcommand{\calB}{\mathcal{B}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calE}{\mathcal{E}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calG}{\mathcal{G}}
+\newcommand{\calH}{\mathcal{H}}
+\newcommand{\calI}{\mathcal{I}}
+\newcommand{\calJ}{\mathcal{J}}
+\newcommand{\calK}{\mathcal{K}}
+\newcommand{\calL}{\mathcal{L}}
+\newcommand{\calM}{\mathcal{M}}
+\newcommand{\calN}{\mathcal{N}}
+\newcommand{\calO}{\mathcal{O}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calQ}{\mathcal{Q}}
+\newcommand{\calR}{\mathcal{R}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calT}{\mathcal{T}}
+\newcommand{\calU}{\mathcal{U}}
+\newcommand{\calV}{\mathcal{V}}
+\newcommand{\calW}{\mathcal{W}}
+\newcommand{\calX}{\mathcal{X}}
+\newcommand{\calY}{\mathcal{Y}}
+\newcommand{\calZ}{\mathcal{Z}}
+
+% --------------------------------------
+
+\newcommand{\reffig}[1]{Figure~\ref{#1}}
+
+% Math Operators
+\DeclareMathOperator{\softmax}{softmax}
+\DeclareMathOperator{\ReLU}{ReLU}
+\DeclareMathOperator{\SiLU}{SiLU}
+\DeclareMathOperator{\GELU}{GELU}
+\DeclareMathOperator{\erf}{erf}
+
+% Macro for gradient
+\newcommand{\grad}{\nabla}
+
+\newcommand{\dd}[2]{\frac{d #1}{d #2}}
+\newcommand{\ddn}[3]{\frac{d^{#3} #1}{{d#2}^{#3}}}
+\newcommand{\DD}[2]{\frac{\partial #1}{\partial #2}}
+% no completion in denominator in order to support mixed partials
+\newcommand{\DDN}[3]{\frac{\partial^{#3} #1}{#2}}
+\newcommand{\dps}[1]{{\displaystyle #1}}
+
+\newcommand{\veps}{\varepsilon}
+
+\newcommand{\bracetext}[2]{\underset{#2}{\underbrace{#1}}}
+
+% =============================================
+% NEURAL NETWORK DRAWING LOGIC 
+% https://tikz.net/neural_networks/
+% =============================================
+
+% STYLES
+\tikzset{
+  >=latex, % for default LaTeX arrow head
+  node/.style={thick,circle,draw=myblue,minimum size=22,inner sep=0.5,outer sep=0.6},
+  node in/.style={node,green!20!black,draw=mygreen!30!black,fill=mygreen!25},
+  node hidden/.style={node,blue!20!black,draw=myblue!30!black,fill=myblue!20},
+  node convol/.style={node,orange!20!black,draw=myorange!30!black,fill=myorange!20},
+  node out/.style={node,red!20!black,draw=myred!30!black,fill=myred!20},
+  connect/.style={thick,mydarkblue}, %,line cap=round
+  connect arrow/.style={-{Latex[length=4,width=3.5]},thick,mydarkblue,shorten <=0.5,shorten >=1},
+  node 1/.style={node in}, % node styles, numbered for easy mapping with \nstyle
+  node 2/.style={node hidden},
+  node 3/.style={node out}
+}
+\def\nstyle{int(\lay<\Nnodlen?min(2,\lay):3)} % map layer number onto 1, 2, or 3
+
+\pgfmathsetseed{12345}
+
+% =============================================================
+% AXES STYLE
+% =============================================================
+
+\tikzset{
+	point/.style = {
+		draw,
+		circle,
+		fill,
+		inner sep = 0pt,
+		minimum size = 4pt,
+	},
+}
+
+\pgfplotsset{
+	plane/.style={
+		axis equal image,
+		axis lines = middle,
+		axis line style = {->},
+		xlabel style = {at={(axis description cs: 1.02, 0)}, anchor = west},
+		ylabel style = {at={(axis description cs: 0, 1.02)}, anchor = south},
+		grid = both,
+		minor tick num = 5, 
+		major grid style = {thin, black!50},
+		minor grid style = {very thin, black!30}
+	}
+}
+
+% Arg1: General extra args for axis
+% Arg2: Major grid line color + extra args
+% Arg3: Minor grid line color + extra args
+\NewDocumentEnvironment{plane}{O{}O{black!50}O{black!30}}{
+	\begin{axis}[
+		plane,
+		major grid style={thin, #2},
+		minor grid style={very thin, #3},
+		#1
+	]
+}{
+	\end{axis}
+}
+
+\usepackage{minted}
+
+\setminted{tabsize=4}
+\definecolor{codebg}{rgb}{0.2,0.2,0.2}
+
+\setminted{
+	bgcolor=codebg,
+	breaklines=true
+}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Level-1 Functions}
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		\texttt{<type>} & \texttt{<t>} & Meaning\\
+		\hline
+		\texttt{float} & \texttt{s} or \texttt{S} & real single-precision\\
+		\hline
+		\texttt{double} & \texttt{d} or \texttt{D} & real double-precision\\
+		\hline
+		\texttt{cuComplex} & \texttt{c} or \texttt{C} & complex single-precision\\
+		\hline
+		\texttt{cuDoubleComplex} & \texttt{z} or \texttt{Z} & complex double-precision\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\noindent
+General cuBLAS function name structure: \texttt{cublas{\color{WildStrawberry}<return type>}{\color{TealBlue}<input type>}<name>}
+
+\vspace{12pt}
+
+\begin{minted}[
+	linenos,
+	frame=none,
+	style=native
+]{cuda}
+// Generic name: cublasI<t>amax()
+
+cublasStatus_t cublasIsamax(cublasHandle_t handle, int n, const float* x, int incx, int* result);
+cublasStatus_t cublasIdamax(cublasHandle_t handle, int n, const double* x, int incx, int* result);
+cublasStatus_t cublasIcamax(cublasHandle_t handle, int n, const cuComplex* x, int incx, int* result);
+cublasStatus_t cublasIzamax(cublasHandle_t handle, int n, const cuDoubleComplex* x, int incx, int* result);
+\end{minted}
+
+\noindent
+Description: Finds the smallest index of the element with the maximum magnitude.
+
+\vspace{12pt}
+
+\begin{minted}[
+	linenos,
+	frame=none,
+	style=native
+]{cuda}
+// Generic name: cublasI<t>amin()
+
+cublasStatus_t cublasIsamin(cublasHandle_t handle, int n, const float* x, int incx, int* result);
+cublasStatus_t cublasIdamin(cublasHandle_t handle, int n, const double* x, int incx, int* result);
+cublasStatus_t cublasIcamin(cublasHandle_t handle, int n, const cuComplex* x, int incx, int* result);
+cublasStatus_t cublasIzamin(cublasHandle_t handle, int n, const cuDoubleComplex* x, int incx, int* result);
+\end{minted}
+
+\noindent
+Description: Finds the smallest index of the element with the minimum magnitude.
+
+\vspace{12pt}
+
+
+
+\end{document}
