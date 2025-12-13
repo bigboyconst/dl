@@ -14,6 +14,6 @@ public:
 	~CublasContext() {
 		cublasDestroy(handle);
 	}
-}
+};
 
 #endif // CULA_CUBLASCONTEXT_CUH

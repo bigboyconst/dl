@@ -1,18 +1,8 @@
 #include "cuLA.cuh"
 
+#include <cassert>
 #include <cuda_runtime.h>
 #include "cublas_v2.h"
-
-__global__ void mat_sub(const float* A, 
-	const float* B,
-	float* C, 
-	int n) {
-	int i = blockIdx.x * blockDim.x + threadIdx.x;
-
-	if (i < n) {
-		C[i] = A[i] - B[i];
-	}
-}
 
 __global__ void mat_add(const float* A, 
 	const float* B, 
@@ -25,12 +15,89 @@ __global__ void mat_add(const float* A,
 	}
 }
 
+__global__ void mat_sub(const float* A, 
+	const float* B,
+	float* C, 
+	int n) {
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (i < n) {
+		C[i] = A[i] - B[i];
+	}
+}
+
+__global__ void mat_scale(const float* A,
+	const float x,
+	float* C,
+	int n) {
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (i < n) {
+		C[i] = A[i] * x;
+	}
+}
+
+__global__ void mat_apply(const float* A,
+	float(*fn)(float),
+	float* C,
+	int n) {
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (i < n) {
+		C[i] = fn(A[i]);
+	}
+}
+
 void cuLA_matAdd(
 	CublasContext& ctx,
 	const Matrix& A,
 	const Matrix& B,
 	Matrix& C) {
+	assert(A.rows == B.rows && A.cols == B.cols);
+	
+	int n = A.rows * A.cols;
+	int threads = CULA_THREAD_COUNT;
+	int blocks = CULA_BLOCKS(n, threads);
 
+	mat_add<<<blocks, threads>>>(A.device_data, B.device_data, C.device_data, n);
+}
+
+void cuLA_matSub(
+	CublasContext& ctx,
+	const Matrix& A,
+	const Matrix& B,
+	Matrix& C) {
+	assert(A.rows == B.rows && A.cols == B.cols);
+
+	int n = A.rows * A.cols;
+	int threads = CULA_THREAD_COUNT;
+	int blocks = CULA_BLOCKS(n, threads);
+
+	mat_sub<<<blocks, threads>>>(A.device_data, B.device_data, C.device_data, n);
+}
+
+void cuLA_matScale(
+	CublasContext& ctx,
+	const Matrix& A,
+	const float val,
+	Matrix& C) {
+	int n = A.rows * A.cols;
+	int threads = CULA_THREAD_COUNT;
+	int blocks = CULA_BLOCKS(n, threads);
+
+	mat_scale<<<blocks, threads>>>(A.device_data, val, C.device_data, n);
+}
+
+void cuLA_matApply(
+	CublasContext& ctx,
+	const Matrix& A,
+	float(*fn)(float),
+	Matrix& C) {
+	int n = A.rows * A.cols;
+	int threads = CULA_THREAD_COUNT;
+	int blocks = CULA_BLOCKS(n, threads);
+
+	mat_apply<<<blocks, threads>>>(A.device_data, fn, C.device_data, n);
 }
 
 void cuLA_matMul(
@@ -78,9 +145,9 @@ void cuLA_linear(
 	const Matrix& A,
 	const Vector& x,
 	Vector& y,
-	const float a = 1.0f,
-	const float b = 1.0f,
-	bool transp = false) {
+	const float a,
+	const float b,
+	bool transp) {
 	cublasSgemv(
 		ctx.handle, 
 		transp ? CUBLAS_OP_T : CUBLAS_OP_N,
@@ -92,8 +159,6 @@ void cuLA_linear(
 		y.device_data, 1
 	);
 }
-
-
 
 #pragma region Vector Implementations
 
@@ -114,7 +179,7 @@ void Vector::upload(const float* h_data) {
 }
 
 void Vector::download(float* h_data) const {
-	cublasSetVector(
+	cublasGetVector(
 		count, sizeof(float),
 		device_data, 1,
 		h_data, 1
@@ -144,7 +209,7 @@ void Matrix::upload(const float* h_data) {
 }
 
 void Matrix::download(float* h_data) const {
-	cublasSetMatrix(
+	cublasGetMatrix(
 		rows, cols, sizeof(float),
 		device_data, rows,
 		h_data, rows

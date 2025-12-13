@@ -41,7 +41,18 @@ int main(int argc, char** argv) {
 
 	if (!mkdir_if_not_exists(BUILD_DIR)) return 1;
 
-	nvcc(&cmd, targets[0], sources.items[0]);
+	// nvcc(&cmd, targets[0], sources.items[0]);
+
+	// Temporary fix cause im too lazy to track down the issue
+
+	cmd_append(&cmd, 
+		"nvcc",
+		"-o", "build/cudatest",
+		"-Isrc/thirdparty/",
+		"-lcublas",
+		"src/cudatest/cudatest.cu",
+		"src/cuLA/cuLA.cu"
+	);
 
 	if (!cmd_run_sync_and_reset(&cmd)) return 1;
 

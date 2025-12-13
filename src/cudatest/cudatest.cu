@@ -1,13 +1,12 @@
 #include <cuda_runtime.h>
 #include <iostream>
 #include <cstdio>
-#include "../cuLA/Matrix.cuh"
 #include "cublas_v2.h"
 #include <chrono>
 
-#define IDX2C(i,j,ld) (((j)*(ld))+(i))
+#include "../cuLA/cuLA.cuh"
 
-cublasHandle_t ctx;
+#define IDX2C(i,j,ld) (((j)*(ld))+(i))
 
 #define CUDA_CHECK_ERROR(call) \
 do { \
@@ -30,47 +29,52 @@ do { \
 } while (0)
 
 // For validation
-void matmulCPU(const Matrix& A, const Matrix& B, Matrix& C) {
-	for (int i = 0; i < A.rows; i++) {
-		for (int j = 0; j < B.cols; j++) {
+void matmulCPU(const float* A, const float* B, float* C,
+	int m, int K, int n) {
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
 			float cval = 0.0f;
-			for (int k = 0; k < A.cols; k++) {
-				cval += A.at(i, k) * B.at(k, j);
+			for (int k = 0; k < K; k++) {
+				cval += A[IDX2C(i, k, m)] * B[IDX2C(k, j, K)];
 			}
-			C.at_ref(i, j) = cval;
+			C[IDX2C(i, j, m)] = cval;
 		}
 	}
 }
 
-void matmul(const Matrix& A, const Matrix& B, Matrix& C) {
-	float alpha = 1.0f, beta = 0.0f;
-
-	CUBLAS_CHECK_ERROR(cublasSgemm(
-		ctx,
-		CUBLAS_OP_N, CUBLAS_OP_N,
-		A.rows, B.cols, A.cols,
-		&alpha,
-		A.data, A.rows,
-		B.data, B.rows,
-		&beta,
-		C.data, C.rows
-	));
-}
-
 // Function to initialize matrix elements
 void initializeMatrix(Matrix& mat) {
+	float* data = (float*)malloc(mat.size_bytes());
     for (int i = 0; i < mat.rows; ++i) {
         for (int j = 0; j < mat.cols; ++j) {
-            mat.at_ref(i, j) = static_cast<float>(rand() % 100);
+            data[IDX2C(i, j, mat.rows)] = static_cast<float>(rand() % 100);
         }
     }
+    mat.upload(data);
+    free(data);
 }
 
 void printMatrix(const Matrix& mat) {
+	float* data = (float*)malloc(mat.size_bytes());
+	mat.download(data);
 	for (int i = 0; i < mat.rows; i++) {
 		for (int j = 0; j < mat.cols; j++) {
-			std::cout << mat.at(i, j);
+			std::cout << data[IDX2C(i, j, mat.rows)];
 			if (j != mat.cols - 1) {
+				std::cout << ", ";
+			}
+		}
+		std::cout << "\n";
+	}
+	std::cout << "\n\n";
+	free(data);
+}
+
+void printValues(const float* data, int rows, int cols) {
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			std::cout << data[IDX2C(i, j, rows)];
+			if (j != cols - 1) {
 				std::cout << ", ";
 			}
 		}
@@ -86,78 +90,47 @@ int main() {
 	int K = 768;
 	int N = 1024;
 
-    Matrix hostA = {M, K, (float*)malloc(M * K * sizeof(float))};
-    Matrix hostB = {K, N, (float*)malloc(K * N * sizeof(float))};
-    Matrix hostC = {M, N, (float*)malloc(M * N * sizeof(float))};
+	CublasContext ctx = CublasContext();
 
-    if (!hostA.data || !hostB.data || !hostC.data) {
-    	fprintf(stderr, "Memory allocation failed\n Buy more ram ig lol\n");
-    	exit(EXIT_FAILURE);
-    }
+    Matrix A(M, K);
+    Matrix B(K, N);
+    Matrix C(M, N);
 
-    initializeMatrix(hostA);
-    initializeMatrix(hostB);
-
-    Matrix devA;
-    Matrix devB;
-    Matrix devC;
-
-    devA.rows = hostA.rows; devA.cols = hostA.cols;
-    devB.rows = hostB.rows; devB.cols = hostB.cols;
-    devC.rows = hostC.rows; devC.cols = hostC.cols;
-
-    CUDA_CHECK_ERROR(cudaMalloc(&devA.data, hostA.size_bytes()));
-    CUDA_CHECK_ERROR(cudaMalloc(&devB.data, hostB.size_bytes()));
-    CUDA_CHECK_ERROR(cudaMalloc(&devC.data, hostC.size_bytes()));
-
-    CUBLAS_CHECK_ERROR(cublasCreate(&ctx));
-
-    CUBLAS_CHECK_ERROR(cublasSetMatrix(
-    	hostA.rows, hostA.cols, sizeof(float), 
-    	hostA.data, hostA.rows,
-    	devA.data, hostA.rows
-	));
-
-    CUBLAS_CHECK_ERROR(cublasSetMatrix(
-    	hostB.rows, hostB.cols, sizeof(float),
-    	hostB.data, hostB.rows,
-    	devB.data, hostB.rows
-	));
+    initializeMatrix(A);
+    initializeMatrix(B);
 
    	auto start = std::chrono::high_resolution_clock::now();
-    matmul(devA, devB, devC);
+    cuLA_matMul(ctx, A, B, C);
     cudaDeviceSynchronize();
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float> duration = end - start;
 
-    // CUBLAS_CHECK_ERROR(
-    // 	cublasGetMatrix(
-    // 		devC.rows, devC.cols, sizeof(float), 
-    // 		devC.data, devC.rows, 
-    // 		hostC.data, hostC.rows
-	// ));
-
     printf("GPU Matrix multiplication:\n");
     printf("Duration: %f ms\n", duration.count() * 1000.0f);
+    
+    // printMatrix(C);
 
-    Matrix C2 = {M, N, (float*)malloc(M * N * sizeof(float))};
+    float* hostA = (float*)malloc(A.size_bytes());
+    float* hostB = (float*)malloc(B.size_bytes());
+    
+    A.download(hostA);
+    B.download(hostB);
+
+    float* hostC = (float*)malloc(C.size_bytes());
+
+    start = std::chrono::high_resolution_clock::now();
+    matmulCPU(hostA, hostB, hostC, M, K, N);
+    end = std::chrono::high_resolution_clock::now();
+    duration = end - start;
 
     printf("CPU Matrix multiplication:\n");
-    
-    auto start2 = std::chrono::high_resolution_clock::now();
-    matmulCPU(hostA, hostB, C2);
-    auto end2 = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<float> d2 = end2 - start2;
-    printf("Duration: %f ms\n", d2.count() * 1000.0f);
+    printf("Duration: %f ms\n", duration.count() * 1000.0f);
 
-    cudaFree(devA.data);
-    cudaFree(devB.data);
-    cudaFree(devC.data);
+    // printValues(hostC, M, N);
 
-    cublasDestroy(ctx);
+    free(hostC);
+    free(hostB);
+    free(hostA);
 
-	free(hostA.data);
-	free(hostB.data);
-	free(hostC.data);
-	free(C2.data);
+    return 0;
 }

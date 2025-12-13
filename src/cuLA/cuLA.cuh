@@ -5,20 +5,51 @@
 #include "Vector.cuh"
 #include "Matrix.cuh"
 
-__global__ void mat_sub(const float* A, 
-	const float* B,
-	float* C, 
-	int n);
+#define CULA_THREAD_COUNT 256
+#define CULA_BLOCKS(n, threads) ((n) + (threads) - 1) / (threads)
 
 __global__ void mat_add(const float* A, 
 	const float* B, 
 	float* C, 
 	int n);
 
+__global__ void mat_sub(const float* A, 
+	const float* B,
+	float* C, 
+	int n);
+
+__global__ void mat_scale(const float* A,
+	const float x,
+	float* C,
+	int n);
+
+__global__ void mat_apply(const float* A, 
+	float(*fn)(float),
+	float* C,
+	int n);
+
 void cuLA_matAdd(
 	CublasContext& ctx,
 	const Matrix& A,
 	const Matrix& B,
+	Matrix& C);
+
+void cuLA_matSub(
+	CublasContext& ctx,
+	const Matrix& A,
+	const Matrix& B,
+	Matrix& C);
+
+void cuLA_matScale(
+	CublasContext& ctx,
+	const Matrix& A,
+	const float val,
+	Matrix& C);
+
+void cuLA_matApply(
+	CublasContext& ctx,
+	const Matrix& A,
+	float(*fn)(float),
 	Matrix& C);
 
 void cuLA_matMul(
