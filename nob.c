@@ -32,7 +32,7 @@ void nvcc(Cmd* cmd, const char* target, const char** sources) {
 int main(int argc, char** argv) {
 	NOB_GO_REBUILD_URSELF(argc, argv);
 	// cudatest
-	const char* cudatest_srcs[] = { "cudatest.cu" };
+	const char* cudatest_srcs[] = { "cudatest.cu", "../cuLA/cuLA.cu" };
 	da_append(&sources, cudatest_srcs);
 
 	Cmd cmd = {0};

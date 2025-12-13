@@ -1,7 +1,7 @@
 #ifndef CULA_CUBLASCONTEXT_CUH
 #define CULA_CUBLASCONTEXT_CUH
 
-#include <cublas_v2.h>
+#include "cublas_v2.h"
 
 class CublasContext {
 public:

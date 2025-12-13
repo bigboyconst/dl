@@ -4,7 +4,11 @@
 struct Matrix {
 	int rows;
 	int cols;
-	float* data;
+	float* device_data;
+
+	Matrix(int r, int c);
+
+	~Matrix();
 
 	inline size_t size() const {
 		return rows * cols;
@@ -14,13 +18,9 @@ struct Matrix {
 		return size() * sizeof(float);
 	}
 
-	inline float at(int i, int j) const {
-		return data[j * rows + i];
-	}
+	void upload(const float* h_data);
 
-	inline float& at_ref(int i, int j) {
-		return data[j * rows + i];
-	}
+	void download(float* h_data) const;
 };
 
 #endif // CULA_MATRIX_CUH

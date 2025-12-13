@@ -2,45 +2,70 @@
 #define CULA_CULA_CUH
 
 #include "CublasContext.cuh"
-
 #include "Vector.cuh"
 #include "Matrix.cuh"
 
-#include <cublas_v2.h>
+__global__ void mat_sub(const float* A, 
+	const float* B,
+	float* C, 
+	int n);
+
+__global__ void mat_add(const float* A, 
+	const float* B, 
+	float* C, 
+	int n);
+
+void cuLA_matAdd(
+	CublasContext& ctx,
+	const Matrix& A,
+	const Matrix& B,
+	Matrix& C);
 
 void cuLA_matMul(
 	CublasContext& ctx,
 	const Matrix& A,
 	const Matrix& B,
-	Matrix& C
-) {
-	float alpha = 1.0f;
-	float beta = 0.0f;
+	Matrix& C);
 
-	cublasSgemm(
-		ctx.handle,
-		CUBLAS_OP_N, CUBLAS_OP_N,
-		A.rows, B.cols, A.cols,
-		&alpha,
-		A.data, A.rows,
-		B.data, B.rows,
-		&beta,
-		C.data, C.rows
-	);
-}
+void cuLA_matVecMul(
+	CublasContext& ctx,
+	const Matrix& A,
+	const Vector& x,
+	Vector& y);
 
-#pragma region Vector Implementations
+void cuLA_linear(
+	CublasContext& ctx,
+	const Matrix& A,
+	const Vector& x,
+	Vector& y,
+	const float a = 1.0f,
+	const float b = 1.0f,
+	bool transp = false);
 
+// #pragma region Vector Implementations
 
+// Vector::Vector(int count) : count(count) {
+// 	cudaMalloc(&device_data, count * sizeof(float));
+// }
 
-#pragma endregion
+// Vector::~Vector() {
+// 	cudaFree(device_data);
+// }
 
-// =========================================
+// #pragma endregion
 
-#pragma region Matrix Implementations
+// // =========================================
 
+// #pragma region Matrix Implementations
 
+// Matrix::Matrix(int r, int c) : rows(r), cols(c) {
+// 	cudaMalloc(&device_data, r * c * sizeof(float));
+// }
 
-#pragma endregion
+// Matrix::~Matrix() {
+// 	cudaFree(device_data);
+// }
+
+// #pragma endregion
 
 #endif // CULA_CULA_CUH

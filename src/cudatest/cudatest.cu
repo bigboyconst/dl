@@ -97,7 +97,7 @@ int main() {
 
     initializeMatrix(hostA);
     initializeMatrix(hostB);
-    
+
     Matrix devA;
     Matrix devB;
     Matrix devC;
@@ -126,15 +126,16 @@ int main() {
 
    	auto start = std::chrono::high_resolution_clock::now();
     matmul(devA, devB, devC);
+    cudaDeviceSynchronize();
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float> duration = end - start;
 
-    CUBLAS_CHECK_ERROR(
-    	cublasGetMatrix(
-    		devC.rows, devC.cols, sizeof(float), 
-    		devC.data, devC.rows, 
-    		hostC.data, hostC.rows
-	));
+    // CUBLAS_CHECK_ERROR(
+    // 	cublasGetMatrix(
+    // 		devC.rows, devC.cols, sizeof(float), 
+    // 		devC.data, devC.rows, 
+    // 		hostC.data, hostC.rows
+	// ));
 
     printf("GPU Matrix multiplication:\n");
     printf("Duration: %f ms\n", duration.count() * 1000.0f);

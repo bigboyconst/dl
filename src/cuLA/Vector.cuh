@@ -3,15 +3,23 @@
 
 struct Vector {
 	int count;
-	float* data;
+	float* device_data;
 
-	size_t size() const {
+	Vector(int count);
+
+	~Vector();
+
+	inline size_t size() const {
 		return count;
 	}
 
-	size_t size_bytes() const {
+	inline size_t size_bytes() const {
 		return size() * sizeof(float);
 	}
+
+	void upload(const float* h_data);
+
+	void download(float* h_data) const;
 };
 
 #endif // CULA_VECTOR_CUH

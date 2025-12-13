@@ -17,7 +17,7 @@ The project structure looks something like this:
 
 To build the project, simply run
 ```bash
-$ ./nob
+./nob
 ```
 from the root directory.
 
@@ -74,7 +74,7 @@ cudaMalloc(&dev_z, size_z);
 // W
 cublasSetMatrix(
 	m, n, sizeof(float),
-	m, n,
+	W, m,
 	dev_W, m
 );
 
