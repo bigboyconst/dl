@@ -54,6 +54,15 @@ void initializeMatrix(Matrix& mat) {
     free(data);
 }
 
+void initializeVector(Vector& vec) {
+	float* data = (float*)malloc(vec.size_bytes());
+	for (int i = 0; i < vec.count; i++) {
+		data[i] = static_cast<float>(rand() % 100);
+	}
+	vec.upload(data);
+	free(data);
+}
+
 void printMatrix(const Matrix& mat) {
 	float* data = (float*)malloc(mat.size_bytes());
 	mat.download(data);
@@ -83,7 +92,7 @@ void printValues(const float* data, int rows, int cols) {
 	std::cout << "\n\n";
 }
 
-int main() {
+void compareGPUtoCPU() {
 	srand(1234);
 
 	int M = 1024;
@@ -131,6 +140,34 @@ int main() {
     free(hostC);
     free(hostB);
     free(hostA);
+}
+
+int main() {
+	srand(1234);
+
+	Matrix W(10, 12);
+	Vector a(12);
+	Vector b(10);
+
+	initializeMatrix(W);
+	initializeVector(a);
+	initializeVector(b);
+
+	W.print();
+
+	std::cout << "\n\n";
+
+	a.print();
+
+	std::cout << "\n\n";
+
+	b.print();
+
+	std::cout << "\n\n";
+
+	Vector z = W * a + b;
+
+	z.print();
 
     return 0;
 }
