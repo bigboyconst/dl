@@ -8,7 +8,7 @@ __global__ void vec_add(const float* a,
 	const float* b,
 	float* c,
 	int n) {
-	int i = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (i < n) {
 		c[i] = a[i] + b[i];
@@ -19,7 +19,7 @@ __global__ void vec_sub(const float* a,
 	const float* b,
 	float* c,
 	int n) {
-	int i = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (i < n) {
 		c[i] = a[i] - b[i];
@@ -30,7 +30,7 @@ __global__ void vec_mul(const float* a,
 	const float* b,
 	float* c,
 	int n) {
-	int i = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (i < n) {
 		c[i] = a[i] * b[i];
@@ -41,21 +41,21 @@ __global__ void vec_div(const float* a,
 	const float* b, 
 	float* c,
 	int n) {
-	int i = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (i < n) {
 		c[i] = a[i] / b[i];
 	}
 }
 
-__global__ void vec_scale(const float* a,
-	const float x,
+__global__ void vec_apply(const float* a,
+	float(*fn)(float),
 	float* c,
 	int n) {
-	int i = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if (i < n) {
-		c[i] = a[i] * x;
+		c[i] = fn(a[i]);
 	}
 }
 
@@ -159,15 +159,28 @@ void cuLA_vecScale(CublasContext& ctx,
 	const Vector& a,
 	const float x,
 	Vector& c) {
+	float alpha = x;
+	c = a;
+	cublasSscal(ctx.handle, 
+		a.count,
+		&alpha,
+		c.device_data,
+		1
+	);
+}
+
+void cuLA_vecApply(CublasContext& ctx,
+	const Vector& a,
+	float(*fn)(float),
+	Vector& c) {
 	int n = a.count;
 	int threads = CULA_THREAD_COUNT;
 	int blocks = CULA_BLOCKS(n, threads);
 
-	vec_scale<<<blocks, threads>>>(a.device_data, x, c.device_data, n);
+	vec_apply<<<blocks, threads>>>(a.device_data, fn, c.device_data, n);
 }
 
-void cuLA_matAdd(
-	CublasContext& ctx,
+void cuLA_matAdd(CublasContext& ctx,
 	const Matrix& A,
 	const Matrix& B,
 	Matrix& C) {
@@ -180,8 +193,7 @@ void cuLA_matAdd(
 	mat_add<<<blocks, threads>>>(A.device_data, B.device_data, C.device_data, n);
 }
 
-void cuLA_matSub(
-	CublasContext& ctx,
+void cuLA_matSub(CublasContext& ctx,
 	const Matrix& A,
 	const Matrix& B,
 	Matrix& C) {
@@ -194,8 +206,7 @@ void cuLA_matSub(
 	mat_sub<<<blocks, threads>>>(A.device_data, B.device_data, C.device_data, n);
 }
 
-void cuLA_matScale(
-	CublasContext& ctx,
+void cuLA_matScale(CublasContext& ctx,
 	const Matrix& A,
 	const float val,
 	Matrix& C) {
@@ -206,8 +217,7 @@ void cuLA_matScale(
 	mat_scale<<<blocks, threads>>>(A.device_data, val, C.device_data, n);
 }
 
-void cuLA_matApply(
-	CublasContext& ctx,
+void cuLA_matApply(CublasContext& ctx,
 	const Matrix& A,
 	float(*fn)(float),
 	Matrix& C) {
@@ -218,18 +228,27 @@ void cuLA_matApply(
 	mat_apply<<<blocks, threads>>>(A.device_data, fn, C.device_data, n);
 }
 
-void cuLA_matMul(
-	CublasContext& ctx,
+void cuLA_matMul(CublasContext& ctx,
 	const Matrix& A,
 	const Matrix& B,
-	Matrix& C) {
+	Matrix& C,
+	bool transA) {
 	float alpha = 1.0f;
 	float beta = 0.0f;
 
+	// op(A) m x k
+	// B k x n
+	// C m x n
+
+	int m = transA ? A.cols : A.rows;
+	int k = transA ? A.rows : A.cols;
+	int n = B.cols; // never transposed
+
 	cublasSgemm(
 		ctx.handle,
-		CUBLAS_OP_N, CUBLAS_OP_N,
-		A.rows, B.cols, A.cols,
+		transA ? CUBLAS_OP_T : CUBLAS_OP_N, 
+		CUBLAS_OP_N,
+		m, n, k,
 		&alpha,
 		A.device_data, A.rows,
 		B.device_data, B.rows,
@@ -238,18 +257,22 @@ void cuLA_matMul(
 	);
 }
 
-void cuLA_matVecMul(
-	CublasContext& ctx,
+void cuLA_matVecMul(CublasContext& ctx,
 	const Matrix& A,
 	const Vector& x,
-	Vector& y) {
+	Vector& y,
+	bool transp) {
 	float alpha = 1.0f;
 	float beta = 0.0f;
 
+	int m = A.rows;
+	int n = A.cols;
+
 	cublasSgemv(
 		ctx.handle,
-		CUBLAS_OP_N,
-		A.rows, A.cols,
+		transp ? CUBLAS_OP_T : CUBLAS_OP_N,
+		m, 
+		n,
 		&alpha,
 		A.device_data, A.rows,
 		x.device_data, 1,
@@ -258,8 +281,7 @@ void cuLA_matVecMul(
 	);
 }
 
-void cuLA_linear(
-	CublasContext& ctx,
+void cuLA_linear(CublasContext& ctx,
 	const Matrix& A,
 	const Vector& x,
 	Vector& y,
@@ -302,6 +324,12 @@ void Vector::download(float* h_data) const {
 		device_data, 1,
 		h_data, 1
 	);
+}
+
+Vector Vector::apply(float(*fn)(float)) const {
+	Vector v(count);
+	cuLA_vecApply(cuLA::ctx, *this, fn, v);
+	return v;
 }
 
 Matrix Vector::outer(const Vector& other) const {
@@ -434,6 +462,30 @@ void Matrix::download(float* h_data) const {
 		device_data, rows,
 		h_data, rows
 	);
+}
+
+Matrix Matrix::apply(float(*fn)(float)) const {
+	Matrix m(rows, cols);
+	cuLA_matApply(cuLA::ctx, *this, fn, m);
+	return m;
+}
+
+Matrix Matrix::transpose_mul(const Matrix& other) const {
+	// this (rows x cols) -> (cols x rows)
+	// other (r x c)
+	// res => cols x c
+	Matrix res(cols, other.cols);
+	cuLA_matMul(cuLA::ctx, *this, other, res, true);
+	return res;
+}
+
+Vector Matrix::transpose_mul(const Vector& other) const {
+	// this => rows x cols -> cols x rows
+	// other => rows x 1
+	// => cols x 1
+	Vector res(cols);
+	cuLA_matVecMul(cuLA::ctx, *this, other, res, true);
+	return res;
 }
 
 Vector Matrix::linear(const Vector& x, 

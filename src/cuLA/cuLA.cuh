@@ -32,8 +32,8 @@ __global__ void vec_div(const float* a,
 	float* c, 
 	int n);
 
-__global__ void vec_scale(const float* a,
-	const float x,
+__global__ void vec_apply(const float* a,
+	float(*fn)(float),
 	float* c,
 	int n);
 
@@ -82,6 +82,11 @@ void cuLA_vecScale(CublasContext& ctx,
 	const float x,
 	Vector& c);
 
+void cuLA_vecApply(CublasContext& ctx,
+	const Vector& a,
+	float(*fn)(float),
+	Vector& c);
+
 void cuLA_matAdd(CublasContext& ctx,
 	const Matrix& A,
 	const Matrix& B,
@@ -105,12 +110,14 @@ void cuLA_matApply(CublasContext& ctx,
 void cuLA_matMul(CublasContext& ctx,
 	const Matrix& A,
 	const Matrix& B,
-	Matrix& C);
+	Matrix& C,
+	bool transA = false);
 
 void cuLA_matVecMul(CublasContext& ctx,
 	const Matrix& A,
 	const Vector& x,
-	Vector& y);
+	Vector& y,
+	bool transp = false);
 
 void cuLA_linear(CublasContext& ctx,
 	const Matrix& A,

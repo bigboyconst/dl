@@ -42,6 +42,8 @@ struct Vector {
 
 	Matrix outer(const Vector& other) const;
 
+	Vector apply(float(*fn)(float)) const;
+
 	Vector& operator+=(const Vector& other);
 
 	Vector& operator-=(const Vector& other);

@@ -5,6 +5,10 @@
 #define BUILD_DIR "build/"
 #define SRC_DIR "src/"
 #define THIRDPARTY_DIR "src/thirdparty/"
+#define CULA_SRC SRC_DIR"cuLA/cuLA.cu"
+#define CULA_INCL SRC_DIR"cuLA/"
+
+#include <stdbool.h>
 
 // This is so fucking cursed bro
 typedef struct {
@@ -16,17 +20,34 @@ typedef struct {
 Sources sources = {0};
 
 const char* targets[] = {
-	"cudatest"
+	"cudatest",
+	"nn"
 };
 
-void nvcc(Cmd* cmd, const char* target, const char** sources) {
+size_t source_sizes[] = {
+	1, 
+	2
+};
+
+void nvcc(Cmd* cmd, const char* target, const char** sources, size_t count) {
 	cmd_append(cmd, "nvcc", "-o", temp_sprintf(BUILD_DIR"%s", target));
 	cmd_append(cmd, "-I"THIRDPARTY_DIR);
 	cmd_append(cmd, "-lcublas");
 
-	for (size_t i = 0; i < NOB_ARRAY_LEN(sources); i++) {
+	for (size_t i = 0; i < count; i++) {
 		cmd_append(cmd, temp_sprintf(SRC_DIR"%s/%s", target, sources[i]));
 	}
+}
+
+void nvcc_cuLA(Cmd* cmd, const char* target, const char** sources, size_t count) {
+	cmd_append(cmd, "nvcc", "-o", temp_sprintf(BUILD_DIR"%s", target));
+	cmd_append(cmd, "-I"THIRDPARTY_DIR);
+	cmd_append(cmd, "-I"CULA_INCL);
+	cmd_append(cmd, "-lcublas");
+	for (size_t i = 0; i < count; i++) {
+		cmd_append(cmd, temp_sprintf(SRC_DIR"%s/%s", target, sources[i]));
+	}
+	cmd_append(cmd, CULA_SRC);
 }
 
 int main(int argc, char** argv) {
@@ -34,6 +55,10 @@ int main(int argc, char** argv) {
 	// cudatest
 	const char* cudatest_srcs[] = { "cudatest.cu", "../cuLA/cuLA.cu" };
 	da_append(&sources, cudatest_srcs);
+
+	// nn
+	const char* nn_srcs[] = { "nn.cpp", "NeuralNetwork.cpp" };
+	da_append(&sources, nn_srcs);
 
 	Cmd cmd = {0};
 	
@@ -45,14 +70,11 @@ int main(int argc, char** argv) {
 
 	// Temporary fix cause im too lazy to track down the issue
 
-	cmd_append(&cmd, 
-		"nvcc",
-		"-o", "build/cudatest",
-		"-Isrc/thirdparty/",
-		"-lcublas",
-		"src/cudatest/cudatest.cu",
-		"src/cuLA/cuLA.cu"
-	);
+	nvcc_cuLA(&cmd, targets[0], sources.items[0], source_sizes[0]);
+
+	if (!cmd_run_sync_and_reset(&cmd)) return 1;
+
+	nvcc_cuLA(&cmd, targets[1], sources.items[1], source_sizes[1]);
 
 	if (!cmd_run_sync_and_reset(&cmd)) return 1;
 

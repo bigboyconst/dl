@@ -51,6 +51,12 @@ struct Matrix {
 		const float beta = 1.0f,
 		bool transp = false) const;
 
+	Matrix apply(float(*fn)(float)) const;
+
+	Matrix transpose_mul(const Matrix& other) const;
+
+	Vector transpose_mul(const Vector& other) const;
+
 	Matrix& operator+=(const Matrix& other);
 
 	Matrix& operator-=(const Matrix& other);
